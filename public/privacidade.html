@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Política de Privacidade — Integrallys Estética Avançada</title>
+    <meta name="description" content="Política de privacidade da Integrallys Estética Avançada: quais dados coletamos, como usamos e seus direitos conforme a LGPD." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://integrallysestetica.com.br/privacidade.html" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+      :root {
+        --accent: #072737;
+        --gold: #e3bc3c;
+        --beige: #faf9f6;
+        --muted: #6b7280;
+        --ink: #0f172a;
+        --rule: #e7e3d8;
+        --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+        --serif: "Playfair Display", ui-serif, Georgia, serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--beige);
+        color: var(--ink);
+        font-family: var(--sans);
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a { color: var(--accent); }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+      header.site-header {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .wordmark {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+      }
+      .wordmark .name {
+        font-family: var(--serif);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--ink);
+      }
+      .wordmark .tag {
+        font-size: 0.62rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .back-link {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .back-link:hover { color: var(--gold); }
+
+      main {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+
+      .title-block {
+        max-width: 62ch;
+        margin-bottom: 2.5rem;
+      }
+
+      .eyebrow {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+        display: block;
+        margin-bottom: 0.6rem;
+      }
+
+      h1 {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 700;
+        font-size: clamp(2rem, 4.2vw, 2.75rem);
+        margin: 0 0 0.9rem;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+
+      .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 1.2rem;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 1.1rem;
+      }
+
+      .intro {
+        color: var(--muted);
+        font-size: 1.02rem;
+      }
+
+      .card {
+        background: #ffffff;
+        border: 1px solid var(--rule);
+        border-radius: 2rem;
+        padding: clamp(1.75rem, 4vw, 3.5rem);
+      }
+
+      section.clause {
+        max-width: 68ch;
+        padding-top: 2rem;
+        margin-top: 2rem;
+        border-top: 1px solid var(--rule);
+      }
+      section.clause:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+      .clause-heading {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        margin-bottom: 0.85rem;
+      }
+
+      .clause-num {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--gold);
+        font-size: 1.05rem;
+      }
+
+      h2 {
+        font-family: var(--serif);
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin: 0;
+        letter-spacing: -0.005em;
+      }
+
+      section.clause p { margin: 0 0 0.85rem; }
+      section.clause p:last-child { margin-bottom: 0; }
+      section.clause p.lede { color: var(--muted); }
+
+      ul.clause-list {
+        margin: 0 0 0.85rem;
+        padding-left: 1.15rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      ul.clause-list:last-child { margin-bottom: 0; }
+      ul.clause-list li::marker { color: var(--gold); }
+
+      strong { font-weight: 600; }
+
+      .contact-card {
+        margin-top: 0.6rem;
+        padding: 1.1rem 1.3rem;
+        background: var(--beige);
+        border: 1px solid var(--rule);
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      .contact-card .org {
+        font-family: var(--serif);
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+      .contact-card .addr {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      footer.site-footer {
+        background: var(--accent);
+        color: #ffffff;
+        margin-top: 4rem;
+        padding: 2.5rem 1.5rem;
+      }
+      footer.site-footer .inner {
+        max-width: 1040px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      footer.site-footer a {
+        color: rgba(255, 255, 255, 0.75);
+        text-decoration: none;
+      }
+      footer.site-footer a:hover { color: #ffffff; }
+      footer.site-footer .legal-links { display: flex; gap: 1.6rem; }
+
+      @media (max-width: 640px) {
+        footer.site-footer .inner { flex-direction: column; text-align: center; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wordmark">
+        <span class="name">Integrallys</span>
+        <span class="tag">Estética Avançada</span>
+      </div>
+      <a class="back-link" href="/">&larr; Voltar ao site</a>
+    </header>
+
+    <main>
+      <div class="title-block">
+        <span class="eyebrow">Integrallys Estética Avançada</span>
+        <h1>Política de Privacidade</h1>
+        <div class="meta-row">
+          <span>Vigente desde 30 de julho de 2026</span>
+          <span>Versão 1.0</span>
+          <span>Conforme a LGPD (Lei nº 13.709/2018)</span>
+        </div>
+        <p class="intro">Explicamos aqui quais dados coletamos quando você entra em contato com a Integrallys — pelo site, WhatsApp ou anúncios no Facebook e Instagram —, para que os usamos, com quem compartilhamos e quais direitos você tem sobre eles.</p>
+      </div>
+
+      <div class="card">
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">01</span><h2>Quem somos</h2></div>
+          <p>A Integrallys Estética Avançada é uma clínica de estética localizada na Praia da Costa, Vila Velha (ES), especializada em harmonização facial, botox, preenchimento, ozonioterapia e protocolos de emagrecimento. Esta política se aplica ao site integrallysestetica.com.br e aos nossos canais de atendimento, incluindo WhatsApp e redes sociais.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">02</span><h2>Dados que coletamos</h2></div>
+          <ul class="clause-list">
+            <li><strong>Dados de identificação e contato:</strong> nome, telefone/WhatsApp e e-mail, fornecidos em formulários do site, em formulários de cadastro do Facebook e Instagram (lead ads) ou em conversas de atendimento.</li>
+            <li><strong>Dados de saúde:</strong> queixas estéticas, histórico de procedimentos e fotos de "antes e depois", compartilhados durante a triagem inicial e o atendimento para avaliar e planejar seu tratamento. Estes são dados pessoais sensíveis nos termos da LGPD.</li>
+            <li><strong>Dados de navegação:</strong> endereço IP, páginas visitadas, origem do acesso e interações no site, coletados por cookies e ferramentas de análise.</li>
+          </ul>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">03</span><h2>Como usamos seus dados</h2></div>
+          <p>Usamos os dados para agendar avaliações e procedimentos; conduzir a triagem inicial de atendimento, seja pela nossa equipe ou por um assistente de WhatsApp; montar seu plano de tratamento; enviar lembretes, confirmações e comunicações sobre nossos serviços; e cumprir obrigações legais, como a manutenção de prontuário.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">04</span><h2>Base legal para o tratamento</h2></div>
+          <ul class="clause-list">
+            <li><strong>Consentimento</strong> (Art. 7º, I, e Art. 11, I, para dados de saúde) — obtido quando você inicia contato conosco por WhatsApp, formulário ou anúncio.</li>
+            <li><strong>Procedimentos preliminares a um contrato</strong> (Art. 7º, V) — ao solicitar uma avaliação ou orçamento.</li>
+            <li><strong>Tutela da saúde</strong>, em procedimentos que envolvam avaliação clínica realizada por profissionais da nossa equipe (Art. 11, II, "f").</li>
+            <li><strong>Cumprimento de obrigação legal ou regulatória</strong>, incluindo normas aplicáveis à guarda de prontuários.</li>
+          </ul>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">05</span><h2>Com quem compartilhamos seus dados</h2></div>
+          <ul class="clause-list">
+            <li><strong>Meta Platforms</strong> (Facebook/Instagram), para gestão de campanhas de anúncios e formulários de cadastro.</li>
+            <li><strong>Provedores de mensageria e automação de atendimento</strong>, como a API do WhatsApp Business.</li>
+            <li><strong>Provedores de agenda, CRM e infraestrutura em nuvem</strong> utilizados para organizar o atendimento.</li>
+            <li><strong>Profissionais da nossa equipe</strong>, exclusivamente para fins de avaliação e execução do procedimento.</li>
+            <li><strong>Autoridades públicas</strong>, quando exigido por lei.</li>
+          </ul>
+          <p>Não vendemos seus dados pessoais a terceiros.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">06</span><h2>Cookies</h2></div>
+          <p>Nosso site pode utilizar cookies próprios e de terceiros — como o Pixel da Meta — para mensurar o desempenho de campanhas e entender como os visitantes usam o site. Você pode gerenciar ou desativar cookies nas configurações do seu navegador.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">07</span><h2>Armazenamento e segurança</h2></div>
+          <p>Adotamos medidas técnicas e administrativas para proteger seus dados, incluindo controle de acesso e fornecedores com práticas adequadas de segurança. Dados de saúde recebem cuidado adicional: são acessados apenas pela equipe diretamente envolvida no seu atendimento.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">08</span><h2>Por quanto tempo guardamos seus dados</h2></div>
+          <p>Mantemos seus dados pelo tempo necessário para prestar o atendimento e cumprir obrigações legais, como a guarda de prontuário, ou até a revogação do seu consentimento, quando aplicável.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">09</span><h2>Seus direitos como titular</h2></div>
+          <p class="lede">Nos termos do Art. 18 da LGPD, você tem direito a:</p>
+          <ul class="clause-list">
+            <li>Confirmar a existência de tratamento de dados;</li>
+            <li>Acessar seus dados;</li>
+            <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
+            <li>Solicitar anonimização, bloqueio ou eliminação de dados desnecessários;</li>
+            <li>Solicitar a portabilidade dos seus dados;</li>
+            <li>Revogar seu consentimento a qualquer momento;</li>
+            <li>Solicitar informações sobre com quem compartilhamos seus dados.</li>
+          </ul>
+          <p>Para exercer esses direitos, entre em contato pelos canais da seção 12.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">10</span><h2>Dados de menores de idade</h2></div>
+          <p>Não realizamos procedimentos nem coletamos dados de menores de 18 anos sem o consentimento e o acompanhamento dos responsáveis legais.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">11</span><h2>Alterações a esta política</h2></div>
+          <p>Esta política pode ser atualizada periodicamente para refletir mudanças em nossas práticas ou na legislação aplicável. A data de vigência no topo desta página indica a versão mais recente.</p>
+        </section>
+
+        <section class="clause">
+          <div class="clause-heading"><span class="clause-num">12</span><h2>Contato</h2></div>
+          <p>Para dúvidas ou solicitações relacionadas aos seus dados pessoais, entre em contato:</p>
+          <div class="contact-card">
+            <span class="org">Integrallys Estética Avançada</span>
+            <span class="addr">R. Prof. Telmo de Souza Torres, 255 – sala 206, Praia da Costa, Vila Velha – ES, 29101-485</span>
+            <a href="https://wa.me/5527999687380">WhatsApp: (27) 99968-7380</a>
+            <a href="mailto:contato@integrallys.com.br">contato@integrallys.com.br</a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="inner">
+        <span>&copy; 2026 Integrallys Estética Avançada</span>
+        <div class="legal-links">
+          <a href="/">Início</a>
+          <a href="/privacidade.html">Privacidade</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

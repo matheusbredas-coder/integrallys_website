@@ -744,7 +744,7 @@ const Footer = () => {
           <div>© 2024 Integrallys Estética Avançada. Todos os direitos reservados.</div>
           <div className="flex gap-8">
             <a href="#" className="hover:text-white transition-colors">Termos de Uso</a>
-            <a href="#" className="hover:text-white transition-colors">Privacidade</a>
+            <a href="/privacidade.html" className="hover:text-white transition-colors">Privacidade</a>
           </div>
           <div className="text-nowrap">Desenvolvido com sofisticação</div>
         </div>
