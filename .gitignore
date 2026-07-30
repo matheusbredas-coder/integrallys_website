@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Full-resolution source images kept locally before downscaling for the web
+src/assets/images/_originals/

@@ -1,12 +1,108 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+
+    <!-- Favicon: Integrallys monogram in gold on --color-brand-accent -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <title>Integrallys Estética Avançada — Clínica de Estética em Vila Velha, ES</title>
+    <meta name="description" content="Clínica de estética avançada na Praia da Costa, Vila Velha (ES). Botox, harmonização facial, preenchimento labial, lipo enzimática e emagrecimento. Agende sua avaliação." />
+    <link rel="canonical" href="https://integrallysestetica.com.br/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="geo.region" content="BR-ES" />
+    <meta name="geo.placename" content="Vila Velha" />
+
+    <!-- Open Graph / WhatsApp / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Integrallys Estética Avançada" />
+    <meta property="og:title" content="Integrallys Estética Avançada — Clínica de Estética em Vila Velha, ES" />
+    <meta property="og:description" content="Botox, harmonização facial, preenchimento labial e emagrecimento na Praia da Costa, Vila Velha (ES). Avaliação inicial sem custo." />
+    <meta property="og:url" content="https://integrallysestetica.com.br/" />
+    <meta property="og:image" content="https://integrallysestetica.com.br/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Integrallys Estética Avançada — Clínica de Estética em Vila Velha, ES" />
+    <meta name="twitter:description" content="Botox, harmonização facial, preenchimento labial e emagrecimento na Praia da Costa, Vila Velha (ES)." />
+    <meta name="twitter:image" content="https://integrallysestetica.com.br/og-image.jpg" />
+
+    <!-- Structured data: NAP must stay identical to the Google Business Profile -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BeautySalon",
+      "@id": "https://integrallysestetica.com.br/#clinic",
+      "name": "Integrallys Estética Avançada",
+      "url": "https://integrallysestetica.com.br/",
+      "image": "https://integrallysestetica.com.br/og-image.jpg",
+      "telephone": "+55 27 99968-7380",
+      "email": "contato@integrallys.com.br",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "R. Prof. Telmo de Souza Torres, 255 - sala 206",
+        "addressLocality": "Vila Velha",
+        "addressRegion": "ES",
+        "postalCode": "29101-485",
+        "addressCountry": "BR"
+      },
+      "areaServed": [
+        { "@type": "City", "name": "Vila Velha" },
+        { "@type": "City", "name": "Vitória" }
+      ],
+      "makesOffer": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Botox e bioestimuladores" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Harmonização facial" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Preenchimento labial" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ozonioterapia" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Lipo enzimática" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Emagrecimento" } }
+      ]
+    }
+    </script>
+
+    <!-- FAQ structured data — mirrors the FAQ section rendered by the app -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O procedimento de botox dói?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A aplicação é feita com agulhas extremamente finas e utilizamos anestésico tópico, tornando o desconforto mínimo e totalmente suportável." }
+        },
+        {
+          "@type": "Question",
+          "name": "Quanto tempo dura o efeito da harmonização?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Geralmente entre 12 a 18 meses, dependendo do metabolismo individual e do produto utilizado." }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso voltar a trabalhar no mesmo dia?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sim. A maioria dos procedimentos permite o retorno imediato às atividades sociais, com apenas algumas recomendações básicas." }
+        },
+        {
+          "@type": "Question",
+          "name": "Como agendo minha primeira avaliação?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Pelo botão de WhatsApp no site ou preenchendo o formulário de contato." }
+        }
+      ]
+    }
+    </script>
+
     <script>
       // Fix for "Cannot set property fetch of #<Window> which has only a getter"
-      // This happens when polyfills (like formdata-polyfill) try to monkey-patch fetch 
+      // This happens when polyfills (like formdata-polyfill) try to monkey-patch fetch
       // in environments where window.fetch is a non-writable accessor (getter-only).
       (function() {
         if (typeof window !== 'undefined') {
@@ -14,7 +110,7 @@
           if (typeof FormData !== 'undefined' && !FormData.prototype.keys) {
             FormData.prototype.keys = function() { return [].keys(); };
           }
-          
+
           // 2. Try to make fetch writable if it currently only has a getter
           try {
             const desc = Object.getOwnPropertyDescriptor(window, 'fetch');
@@ -47,10 +143,58 @@
         }
       })();
     </script>
+
+    <style>
+      /* Fallback shown only until React mounts; mirrors the rendered page copy. */
+      #seo-fallback {
+        font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: 4rem 1.5rem;
+        color: #0f172a;
+        line-height: 1.6;
+      }
+      #seo-fallback h1 { font-size: 1.75rem; margin-bottom: 1rem; }
+      #seo-fallback h2 { font-size: 1.1rem; margin: 1.5rem 0 .5rem; }
+      #seo-fallback ul { padding-left: 1.25rem; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      React clears #root on mount, so this block is never seen by users with JS.
+      It exists so crawlers, link previews and the first (non-rendering) Googlebot
+      pass find the clinic's name, location and services in the raw HTML.
+      Keep it in sync with src/App.tsx.
+    -->
+    <div id="root">
+      <div id="seo-fallback">
+        <h1>Integrallys Estética Avançada — Clínica de Estética em Vila Velha, ES</h1>
+        <p>
+          A Integrallys é uma clínica de estética avançada na Praia da Costa, em Vila Velha
+          (ES), especializada em harmonização facial, botox e protocolos de emagrecimento.
+          Combinamos precisão médica com olhar artístico para entregar resultados harmônicos
+          e duradouros.
+        </p>
+
+        <h2>Procedimentos</h2>
+        <ul>
+          <li>Botox e bioestimuladores</li>
+          <li>Preenchimento labial</li>
+          <li>Harmonização facial</li>
+          <li>Ozonioterapia</li>
+          <li>Lipo enzimática</li>
+          <li>Emagrecimento</li>
+        </ul>
+
+        <h2>Contato</h2>
+        <p>
+          R. Prof. Telmo de Souza Torres, 255 &ndash; sala 206, Praia da Costa,
+          Vila Velha &ndash; ES, 29101-485<br />
+          Telefone / WhatsApp: <a href="tel:+5527999687380">(27) 99968-7380</a><br />
+          E-mail: <a href="mailto:contato@integrallys.com.br">contato@integrallys.com.br</a>
+        </p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

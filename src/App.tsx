@@ -23,7 +23,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import doctorTeamImg from './assets/images/regenerated_image_1778551922111.png';
+import doctorTeamImg from './assets/images/equipe-clinica.jpg';
 import logoImg from './assets/images/logo.jpg';
 import beforeImg from './assets/images/before_after/before.jpg';
 import afterImg from './assets/images/before_after/after.jpg';
@@ -266,8 +266,9 @@ const Hero = () => {
           <div className="aspect-[4/5] bg-slate-200 rounded-[2rem] overflow-hidden shadow-2xl relative z-10">
              <img
                src={heroImage}
-               alt="Tratamento de Estética"
+               alt="Tratamento de estética facial na Integrallys Estética Avançada, Vila Velha - ES"
                className="w-full h-full object-cover"
+               fetchPriority="high"
              />
           </div>
           {/* Decorative elements */}
@@ -442,8 +443,9 @@ const Services = () => {
                 <div className="h-64 overflow-hidden relative">
                    <img 
                      src={s.image} 
-                     alt={s.name} 
-                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                     alt={`${s.name} na Integrallys Estética Avançada, Vila Velha - ES`}
+                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                     loading="lazy"
                      referrerPolicy="no-referrer"
                    />
                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -474,8 +476,9 @@ const DoctorProfile = () => {
                <div className="aspect-[4/5] bg-slate-300 rounded-3xl overflow-hidden shadow-2xl relative z-10 border-[10px] border-white">
                  <img 
                    src={doctorTeamImg} 
-                   alt="Equipe Clínica" 
-                   className="w-full h-full object-cover" 
+                   alt="Equipe de especialistas da Integrallys Estética Avançada"
+                   className="w-full h-full object-cover"
+                   loading="lazy"
                    referrerPolicy="no-referrer"
                  />
                </div>
@@ -768,7 +771,7 @@ export default function IntegrallysSite() {
       
       {/* WhatsApp Floating Button */}
       <a 
-        href="https://wa.me/552731011485" 
+        href="https://wa.me/5527999687380"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center shadow-2xl z-40 hover:scale-110 transition-transform active:scale-95"
