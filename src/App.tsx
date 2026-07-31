@@ -28,6 +28,9 @@ import logoImg from './assets/images/logo.jpg';
 import beforeImg from './assets/images/before_after/before.jpg';
 import afterImg from './assets/images/before_after/after.jpg';
 
+// --- CONSTANTS ---
+const WHATSAPP_URL = 'https://wa.me/5527999687380';
+
 // --- TYPES ---
 interface Testimonial {
   id: number;
@@ -275,20 +278,20 @@ const Hero = () => {
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-accent/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-slate-300 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
           
-          <div className="absolute -right-8 bottom-20 bg-white p-6 rounded-2xl shadow-xl z-20 hidden md:block border border-slate-100">
-             <div className="flex items-center gap-4 mb-3">
-                <div className="flex -space-x-2">
-                  {[1,2,3].map(i => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
-                      <img src={`https://i.pravatar.cc/100?u=${i}`} alt="" referrerPolicy="no-referrer" />
-                    </div>
-                  ))}
+          <div className="absolute right-4 bottom-28 bg-white p-6 rounded-2xl shadow-xl z-20 hidden md:block border border-slate-100">
+             <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-brand-accent/10 flex items-center justify-center shrink-0">
+                  <Users className="text-brand-accent" size={20} />
                 </div>
-                <span className="text-xs font-bold font-serif">+3.000 Atendidos</span>
+                <div className="leading-tight">
+                  <span className="block text-xs font-bold font-serif">+2.000 Atendidos</span>
+                  <span className="block text-[10px] text-brand-muted">em 5 anos de clínica</span>
+                </div>
              </div>
              <div className="flex gap-1 text-yellow-400">
                {[1,2,3,4,5].map(i => <Star key={i} size={14} fill="currentColor" />)}
              </div>
+             <span className="block mt-1 text-[10px] font-semibold text-brand-muted">5,0 no Google</span>
           </div>
         </motion.div>
       </div>
@@ -590,8 +593,8 @@ const Testimonials = () => {
 
         <div className="mt-16 flex justify-center">
            <div className="bg-white/10 backdrop-blur-md px-8 py-4 rounded-full border border-white/20 flex gap-12 text-white font-serif italic text-lg whitespace-nowrap">
-             <div>+7.000 <span className="text-sm not-italic opacity-60">Pacientes</span></div>
-             <div className="border-l border-white/20 pl-12">4.9/5 <span className="text-sm not-italic opacity-60 text-nowrap">Avaliações no Google</span></div>
+             <div>+2.000 <span className="text-sm not-italic opacity-60">Pacientes</span></div>
+             <div className="border-l border-white/20 pl-12">5,0/5 <span className="text-sm not-italic opacity-60 text-nowrap">Avaliações no Google</span></div>
            </div>
         </div>
       </div>
@@ -719,6 +722,12 @@ const ContactForm = () => {
   );
 };
 
+const socials = [
+  { name: 'Instagram', href: 'https://www.instagram.com/integrallys/', icon: <Instagram size={18} /> },
+  { name: 'WhatsApp', href: WHATSAPP_URL, icon: <Phone size={18} /> },
+  { name: 'Facebook', href: 'https://www.facebook.com/profile.php?id=100066375682865', icon: <Facebook size={18} /> },
+];
+
 const Footer = () => {
   return (
     <footer className="bg-slate-900 text-white pt-20 pb-8 px-6">
@@ -730,18 +739,23 @@ const Footer = () => {
         </div>
 
         <div className="flex gap-10 mb-12">
-          {['Instagram', 'WhatsApp', 'Facebook'].map((social) => (
-            <a key={social} href="#" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors uppercase text-[10px] font-bold tracking-[0.2em]">
-               {social === 'Instagram' && <Instagram size={18} />}
-               {social === 'WhatsApp' && <Phone size={18} />}
-               {social === 'Facebook' && <Facebook size={18} />}
-               {social}
+          {socials.map((social) => (
+            <a
+              key={social.name}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Integrallys no ${social.name}`}
+              className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors uppercase text-[10px] font-bold tracking-[0.2em]"
+            >
+               {social.icon}
+               {social.name}
             </a>
           ))}
         </div>
 
         <div className="w-full border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-[10px] uppercase font-bold tracking-widest gap-6">
-          <div>© 2024 Integrallys Estética Avançada. Todos os direitos reservados.</div>
+          <div>© {new Date().getFullYear()} Integrallys Estética Avançada. Todos os direitos reservados.</div>
           <div className="flex gap-8">
             <a href="#" className="hover:text-white transition-colors">Termos de Uso</a>
             <a href="/privacidade.html" className="hover:text-white transition-colors">Privacidade</a>
@@ -771,7 +785,7 @@ export default function IntegrallysSite() {
       
       {/* WhatsApp Floating Button */}
       <a 
-        href="https://wa.me/5527999687380"
+        href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center shadow-2xl z-40 hover:scale-110 transition-transform active:scale-95"
