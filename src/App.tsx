@@ -27,9 +27,14 @@ import doctorTeamImg from './assets/images/equipe-clinica.jpg';
 import logoImg from './assets/images/logo.jpg';
 import beforeImg from './assets/images/before_after/before.jpg';
 import afterImg from './assets/images/before_after/after.jpg';
+import priscilaImg from './assets/images/reviews/priscila-santana.png';
+import samyImg from './assets/images/reviews/samy-farias.png';
+import vitorImg from './assets/images/reviews/vitor-moreno.png';
 
 // --- CONSTANTS ---
 const WHATSAPP_URL = 'https://wa.me/5527999687380';
+/** Google Business Profile (CID da ficha verificada da clínica). */
+const GOOGLE_REVIEWS_URL = 'https://www.google.com/maps?cid=13605826652762968961';
 
 // --- TYPES ---
 interface Testimonial {
@@ -38,7 +43,8 @@ interface Testimonial {
   role: string;
   content: string;
   rating: number;
-  image: string;
+  /** Optional profile photo. When absent the card falls back to an initial-letter avatar. */
+  image?: string;
 }
 
 // --- COMPONENTS ---
@@ -531,29 +537,31 @@ const DoctorProfile = () => {
 
 const Testimonials = () => {
   const testimonials: Testimonial[] = [
+    // Avaliações reais publicadas no Google Business Profile. Texto transcrito
+    // literalmente — não editar o conteúdo das citações.
     {
       id: 1,
-      name: "Mariana Silva",
-      role: "Paciente de Botox",
-      content: "A Integrallys mudou minha visão sobre estética. O resultado do meu botox ficou tão natural que as pessoas dizem que estou descansada, mas ninguém diz que 'fiz algo'. É exatamente o que eu queria!",
+      name: "Priscila Santana",
+      role: "Avaliação no Google",
+      content: "Minha experiência com a Integrallys foi maravilhosa. Um atendimento de qualidade, profissional excepcional. Meus resultados foram incríveis.",
       rating: 5,
-      image: "https://i.pravatar.cc/150?img=47"
+      image: priscilaImg
     },
     {
       id: 2,
-      name: "Manu P",
-      role: "Harmonização Facial",
-      content: "Profissionalismo impecável. O planejamento 3D do meu rosto antes do procedimento me deu muita segurança. O resultado final superou todas as minhas expectativas.",
+      name: "Samy Farias",
+      role: "Avaliação no Google",
+      content: "Ótimo atendimento, resultados impecáveis dos procedimentos, espaço lindo e confortável. Com certeza voltarei. 🤩",
       rating: 5,
-      image: "https://i.pravatar.cc/150?img=5"
+      image: samyImg
     },
     {
       id: 3,
-      name: "Jorge D",
-      role: "Lipo Enzimática",
-      content: "Estive em várias clínicas antes de encontrar a Integrallys. O protocolo de emagrecimento deles é o único que realmente funcionou para mim sem sacrifícios malucos.",
+      name: "Vitor Moreno",
+      role: "Avaliação no Google",
+      content: "Clinica maravilhosa. Todos os procedimentos que faco o resultado sao maravilhosos. Alem de qualidade e preço",
       rating: 5,
-      image: "https://i.pravatar.cc/150?u=ana"
+      image: vitorImg
     }
   ];
 
@@ -571,16 +579,20 @@ const Testimonials = () => {
 
         <div className="grid md:grid-cols-3 gap-8">
            {testimonials.map((t) => (
-             <div key={t.id} className="bg-white/10 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/20 text-white">
+             <div key={t.id} className="bg-white/10 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/20 text-white flex flex-col">
                 <div className="flex gap-1 text-yellow-400 mb-6">
                    {[...Array(t.rating)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
                 </div>
-                <p className="text-lg italic leading-relaxed mb-8 font-serif opacity-90">
+                <p className="text-lg italic leading-relaxed mb-8 font-serif opacity-90 grow">
                   "{t.content}"
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/30">
-                    <img src={t.image} alt={t.name} referrerPolicy="no-referrer" />
+                  <div className="w-14 h-14 shrink-0 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 flex items-center justify-center">
+                    {t.image ? (
+                      <img src={t.image} alt={`Foto de ${t.name}`} className="w-full h-full object-cover" loading="lazy" />
+                    ) : (
+                      <span className="font-serif text-xl font-bold text-white/90">{t.name.charAt(0)}</span>
+                    )}
                   </div>
                   <div>
                     <h5 className="font-bold">{t.name}</h5>
@@ -591,11 +603,19 @@ const Testimonials = () => {
            ))}
         </div>
 
-        <div className="mt-16 flex justify-center">
+        <div className="mt-16 flex flex-col items-center gap-6">
            <div className="bg-white/10 backdrop-blur-md px-8 py-4 rounded-full border border-white/20 flex gap-12 text-white font-serif italic text-lg whitespace-nowrap">
              <div>+2.000 <span className="text-sm not-italic opacity-60">Pacientes</span></div>
              <div className="border-l border-white/20 pl-12">5,0/5 <span className="text-sm not-italic opacity-60 text-nowrap">Avaliações no Google</span></div>
            </div>
+           <a
+             href={GOOGLE_REVIEWS_URL}
+             target="_blank"
+             rel="noopener noreferrer"
+             className="text-white/70 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.2em] flex items-center gap-2"
+           >
+             Ver todas as avaliações no Google <ArrowRight size={14} />
+           </a>
         </div>
       </div>
     </section>
