@@ -1,40 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
 import heroImage from './assets/images/hero.jpg';
-import preenchimentoLabialImg from './assets/images/preenchimento-labial.jpg';
-import harmonizacaoFacialImg from './assets/images/harmonizacao-facial.jpeg';
-import lipoImg from './assets/images/lipo.jpeg';
-import emagrecimentoImg from './assets/images/emagrecimento.webp';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Instagram, 
-  Linkedin, 
-  Facebook, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  ChevronLeft, 
-  ChevronRight, 
-  CheckCircle, 
+import {
+  Phone,
+  Mail,
+  MapPin,
+  ChevronRight,
+  CheckCircle,
   Star,
   Users,
   Award,
   Zap,
   ArrowRight,
-  Menu,
-  X
 } from 'lucide-react';
 import doctorTeamImg from './assets/images/equipe-clinica.jpg';
-import logoImg from './assets/images/logo.jpg';
 import beforeImg from './assets/images/before_after/before.jpg';
 import afterImg from './assets/images/before_after/after.jpg';
 import priscilaImg from './assets/images/reviews/priscila-santana.png';
 import samyImg from './assets/images/reviews/samy-farias.png';
 import vitorImg from './assets/images/reviews/vitor-moreno.png';
-
-// --- CONSTANTS ---
-const WHATSAPP_URL = 'https://wa.me/5527999687380';
-/** Google Business Profile (CID da ficha verificada da clínica). */
-const GOOGLE_REVIEWS_URL = 'https://www.google.com/maps?cid=13605826652762968961';
+import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
+import { WhatsAppFab } from './components/WhatsAppFab';
+import { Protocols } from './components/Protocols';
+import { protocols } from './data/protocols';
+import { GOOGLE_REVIEWS_URL, whatsappLink } from './lib/constants';
 
 // --- TYPES ---
 interface Testimonial {
@@ -48,82 +38,6 @@ interface Testimonial {
 }
 
 // --- COMPONENTS ---
-
-const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: 'Procedimentos', href: '#services' },
-    { name: 'A clínica', href: '#about' },
-    { name: 'Resultados', href: '#results' },
-    { name: 'Contato', href: '#contact' },
-  ];
-
-  return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-           <img src={logoImg} alt="Integrallys Logo" className="w-12 h-12 object-contain" />
-           <div className="flex flex-col">
-              <span className="font-serif font-bold text-xl leading-tight">Integrallys</span>
-              <span className="text-[10px] uppercase tracking-[0.2em] font-medium opacity-70">Estética Avançada</span>
-           </div>
-        </div>
-
-        <div className="hidden md:flex items-center gap-10">
-          {navLinks.map((link) => (
-            <a key={link.name} href={link.href} className="text-sm font-medium hover:text-brand-accent transition-colors">
-              {link.name}
-            </a>
-          ))}
-        </div>
-
-        <div className="hidden md:flex items-center gap-6">
-          <div className="flex items-center gap-2 text-sm font-medium text-brand-muted">
-            <Phone size={16} className="text-brand-accent" />
-            <span>(27) 99968-7380</span>
-          </div>
-          <button className="bg-brand-accent text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:opacity-90 transition-all shadow-lg shadow-slate-200">
-            Agendar Consulta
-          </button>
-        </div>
-
-        <button className="md:hidden text-slate-900" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 bg-white shadow-xl border-t md:hidden flex flex-col p-6 gap-4"
-          >
-            {navLinks.map((link) => (
-              <a key={link.name} href={link.href} onClick={() => setIsMenuOpen(false)} className="text-lg font-serif">
-                {link.name}
-              </a>
-            ))}
-            <hr />
-            <button className="bg-brand-accent text-white w-full py-4 rounded-xl font-semibold">
-              Agendar Agora
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-};
 
 const BeforeAfterSlider = () => {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -233,12 +147,20 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <button className="bg-brand-accent text-white py-4 px-10 rounded-full font-bold text-lg hover:translate-y-[-2px] hover:shadow-xl hover:shadow-slate-200 transition-all flex items-center justify-center gap-2">
-              Começar Agora <ArrowRight size={20} />
-            </button>
-            <button className="border-2 border-slate-200 text-slate-900 py-4 px-10 rounded-full font-bold text-lg hover:bg-white hover:border-white hover:shadow-lg transition-all">
-              Agendar Avaliação
-            </button>
+            <a
+              href={whatsappLink('Olá! Gostaria de agendar uma avaliação na Integrallys.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-brand-accent text-white py-4 px-10 rounded-full font-bold text-lg hover:translate-y-[-2px] hover:shadow-xl hover:shadow-slate-200 transition-all flex items-center justify-center gap-2"
+            >
+              Agendar Avaliação <ArrowRight size={20} />
+            </a>
+            <a
+              href="#protocolos"
+              className="border-2 border-slate-200 text-slate-900 py-4 px-10 rounded-full font-bold text-lg hover:bg-white hover:border-white hover:shadow-lg transition-all text-center"
+            >
+              Ver Protocolos
+            </a>
           </div>
 
           <div className="grid grid-cols-3 gap-8 border-t border-slate-200 pt-8">
@@ -345,7 +267,7 @@ const ValueProps = () => {
 
 const Results = () => {
   return (
-    <section id="results" className="py-24 px-6 max-w-7xl mx-auto">
+    <section id="results" className="py-24 px-6 max-w-7xl mx-auto scroll-mt-24">
       <div className="text-center mb-16">
         <span className="text-xs font-bold uppercase tracking-widest text-brand-accent mb-2 block">Cuidado e Transformação</span>
         <h2 className="text-4xl md:text-5xl font-bold italic italic-small tracking-tight font-serif">Antes & <span className="text-brand-gold italic not-italic">Depois</span></h2>
@@ -360,14 +282,14 @@ const Results = () => {
         
         <div className="space-y-8">
            <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50">
-             <h4 className="text-2xl font-bold mb-4 font-serif">Protocolo Revolucionário MaxInject™</h4>
+             <h4 className="text-2xl font-bold mb-4 font-serif">Protocolo de Rejuvenescimento Facial</h4>
              <p className="text-brand-muted mb-6">
-               Nossa técnica exclusiva permite uma aplicação mais precisa com zero desperdício, garantindo que cada gota do produto atue onde é necessário para suavizar linhas de expressão sem paralisar o rosto.
+               O resultado acima vem da combinação planejada de toxina botulínica e bioestimulador de colágeno. Cada aplicação é calculada para a sua anatomia, suavizando linhas de expressão sem paralisar o rosto.
              </p>
-             <ul className="space-y-4">
+             <ul className="space-y-4 mb-8">
                 {[
-                  "Resultados em até 48 horas",
-                  "Efeito 'Natural Look' garantido",
+                  "Primeiros resultados em poucos dias",
+                  "Efeito natural, com a sua expressão preservada",
                   "Mínimo desconforto",
                   "Sem tempo de recuperação"
                 ].map((item) => (
@@ -377,6 +299,12 @@ const Results = () => {
                   </li>
                 ))}
              </ul>
+             <a
+               href="/protocolos/rejuvenescimento-facial/"
+               className="text-brand-accent font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all"
+             >
+               Conhecer o protocolo completo <ArrowRight size={16} />
+             </a>
            </div>
 
            <div className="grid grid-cols-2 gap-4">
@@ -395,90 +323,9 @@ const Results = () => {
   );
 };
 
-const Services = () => {
-  const services = [
-    { 
-      name: "Botox & Bioestimuladores", 
-      desc: "Suavize rugas e estimule colágeno para uma pele firme.",
-      image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600"
-    },
-    { 
-      name: "Preenchimento Labial", 
-      desc: "Recupere o volume perdido e harmonize seus traços.",
-      image: preenchimentoLabialImg
-    },
-    {
-      name: "Harmonização Facial",
-      desc: "Equilíbrio estético planejado sob medida para você.",
-      image: harmonizacaoFacialImg
-    },
-    {
-      name: "Ozonioterapia",
-      desc: "Tratamento integrativo para regeneração e saúde.",
-      image: "https://images.unsplash.com/photo-1616391182219-e080b4d1043a?auto=format&fit=crop&q=80&w=600"
-    },
-    {
-      name: "Lipo Enzimática",
-      desc: "Redução de gordura localizada sem cirurgias.",
-      image: lipoImg
-    },
-    {
-      name: "Emagrecimento",
-      desc: "Protocolos metabólicos para perda de peso saudável.",
-      image: emagrecimentoImg
-    },
-  ];
-
-  return (
-    <section id="services" className="bg-brand-beige py-24 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div className="max-w-xl">
-             <span className="text-xs font-bold uppercase tracking-widest text-brand-accent mb-2 block">Nossos Protocolos</span>
-             <h2 className="text-4xl md:text-5xl font-bold italic italic-small tracking-tight font-serif">Especialidades Integrallys</h2>
-          </div>
-          <button className="text-brand-accent font-bold flex items-center gap-2 hover:gap-3 transition-all">
-            Ver Todos os Procedimentos <ArrowRight size={20} />
-          </button>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-           {services.map((s, i) => (
-             <motion.div 
-               key={i}
-               whileHover={{ y: -10 }}
-               className="bg-white rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
-             >
-                <div className="h-64 overflow-hidden relative">
-                   <img 
-                     src={s.image} 
-                     alt={`${s.name} na Integrallys Estética Avançada, Vila Velha - ES`}
-                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                     loading="lazy"
-                     referrerPolicy="no-referrer"
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                   <div className="absolute bottom-6 left-6 text-white font-bold text-xl">{s.name}</div>
-                </div>
-                <div className="p-8">
-                   <p className="text-brand-muted text-sm leading-relaxed mb-6">
-                     {s.desc}
-                   </p>
-                   <button className="text-slate-900 font-bold text-sm flex items-center gap-2 group-hover:text-brand-accent transition-colors">
-                     Saiba Mais <ChevronRight size={16} />
-                   </button>
-                </div>
-             </motion.div>
-           ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
 const DoctorProfile = () => {
   return (
-    <section id="about" className="py-24 px-6 bg-white overflow-hidden">
+    <section id="about" className="py-24 px-6 bg-white overflow-hidden scroll-mt-24">
       <div className="max-w-7xl mx-auto">
          <div className="bg-brand-beige rounded-[3rem] p-8 md:p-20 grid md:grid-cols-2 gap-16 items-center border border-slate-100">
             <div className="relative">
@@ -525,9 +372,12 @@ const DoctorProfile = () => {
                   </div>
                 </div>
               </div>
-              <button className="mt-10 bg-slate-900 text-white px-10 py-4 rounded-full font-bold hover:bg-brand-accent transition-all">
+              <a
+                href="#contact"
+                className="inline-block mt-10 bg-slate-900 text-white px-10 py-4 rounded-full font-bold hover:bg-brand-accent transition-all"
+              >
                 Conheça Nossa Clínica
-              </button>
+              </a>
             </div>
          </div>
       </div>
@@ -666,7 +516,7 @@ const Faq = () => {
 
 const ContactForm = () => {
   return (
-    <section id="contact" className="py-24 px-6 bg-white overflow-hidden relative">
+    <section id="contact" className="py-24 px-6 bg-white overflow-hidden relative scroll-mt-24">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
         <div>
            <span className="text-xs font-bold uppercase tracking-widest text-brand-accent mb-2 block">Dê o Primeiro Passo</span>
@@ -719,12 +569,12 @@ const ContactForm = () => {
                  </div>
               </div>
               <div className="space-y-2">
-                 <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Procedimento de Interesse</label>
+                 <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Protocolo de Interesse</label>
                  <select className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans appearance-none cursor-pointer">
                     <option>Selecione uma opção</option>
-                    <option>Botox / Toxina Botulínica</option>
-                    <option>Preenchimento / Harmonização</option>
-                    <option>Emagrecimento</option>
+                    {protocols.map((protocol) => (
+                      <option key={protocol.slug}>{protocol.name}</option>
+                    ))}
                     <option>Outros</option>
                  </select>
               </div>
@@ -741,52 +591,6 @@ const ContactForm = () => {
     </section>
   );
 };
-
-const socials = [
-  { name: 'Instagram', href: 'https://www.instagram.com/integrallys/', icon: <Instagram size={18} /> },
-  { name: 'WhatsApp', href: WHATSAPP_URL, icon: <Phone size={18} /> },
-  { name: 'Facebook', href: 'https://www.facebook.com/profile.php?id=100066375682865', icon: <Facebook size={18} /> },
-];
-
-const Footer = () => {
-  return (
-    <footer className="bg-slate-900 text-white pt-20 pb-8 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col items-center">
-        <div className="flex flex-col items-center mb-12">
-            <img src={logoImg} alt="Integrallys Logo" className="w-20 h-20 object-contain mb-4" />
-            <h2 className="text-3xl font-bold font-serif italic mb-2 italic-small tracking-tight">Integrallys Estética</h2>
-            <p className="text-slate-400 text-sm tracking-widest uppercase font-medium">Beleza, Ciência e Harmonia</p>
-        </div>
-
-        <div className="flex gap-10 mb-12">
-          {socials.map((social) => (
-            <a
-              key={social.name}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Integrallys no ${social.name}`}
-              className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors uppercase text-[10px] font-bold tracking-[0.2em]"
-            >
-               {social.icon}
-               {social.name}
-            </a>
-          ))}
-        </div>
-
-        <div className="w-full border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-[10px] uppercase font-bold tracking-widest gap-6">
-          <div>© {new Date().getFullYear()} Integrallys Estética Avançada. Todos os direitos reservados.</div>
-          <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Termos de Uso</a>
-            <a href="/privacidade.html" className="hover:text-white transition-colors">Privacidade</a>
-          </div>
-          <div className="text-nowrap">Desenvolvido com sofisticação</div>
-        </div>
-      </div>
-    </footer>
-  );
-};
-
 // --- MAIN WRAPPER ---
 
 export default function IntegrallysSite() {
@@ -796,22 +600,13 @@ export default function IntegrallysSite() {
       <Hero />
       <ValueProps />
       <Results />
-      <Services />
+      <Protocols />
       <DoctorProfile />
       <Testimonials />
       <Faq />
       <ContactForm />
       <Footer />
-      
-      {/* WhatsApp Floating Button */}
-      <a 
-        href={WHATSAPP_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center shadow-2xl z-40 hover:scale-110 transition-transform active:scale-95"
-      >
-        <Phone size={32} />
-      </a>
+      <WhatsAppFab />
     </div>
   );
 }
