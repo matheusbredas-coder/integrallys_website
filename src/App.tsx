@@ -25,6 +25,8 @@ import { WhatsAppFab } from './components/WhatsAppFab';
 import { Protocols } from './components/Protocols';
 import { protocols } from './data/protocols';
 import { GOOGLE_REVIEWS_URL, whatsappLink } from './lib/constants';
+import { submitLead } from './lib/lead';
+import { trackEvent } from './lib/analytics';
 
 // --- TYPES ---
 interface Testimonial {
@@ -515,6 +517,35 @@ const Faq = () => {
 };
 
 const ContactForm = () => {
+  const [form, setForm] = useState({
+    nome: '',
+    whatsapp: '',
+    protocolo: '',
+    mensagem: '',
+    website: '', // armadilha para robô — fica escondida no CSS
+  });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+
+  const set = (field: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (status === 'sending') return;
+    setStatus('sending');
+
+    const result = await submitLead(form);
+    if (result.ok) {
+      setStatus('sent');
+      trackEvent('generate_lead', { method: 'formulario_site', protocolo: form.protocolo });
+      return;
+    }
+    // O lead não pode morrer aqui: a mensagem de erro oferece o WhatsApp, que é para onde
+    // todo o resto do site já manda.
+    setStatus('error');
+  };
+
   return (
     <section id="contact" className="py-24 px-6 bg-white overflow-hidden relative scroll-mt-24">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
@@ -557,35 +588,68 @@ const ContactForm = () => {
         </div>
 
         <div className="bg-brand-beige p-10 rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 relative z-10">
-           <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+           {status === 'sent' ? (
+             <div className="text-center py-10">
+                <div className="w-16 h-16 bg-brand-accent/10 rounded-2xl flex items-center justify-center text-brand-accent mx-auto mb-6">
+                   <CheckCircle size={32} />
+                </div>
+                <h4 className="text-2xl font-bold mb-3 font-serif italic">Recebemos o seu contato</h4>
+                <p className="text-brand-muted leading-relaxed">
+                  Nossa equipe fala com você em até 24 horas pelo WhatsApp informado.
+                </p>
+             </div>
+           ) : (
+           <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* Armadilha de spam: invisível e fora da ordem de tabulação, então só um robô
+                  a preenche. Um envio com ela preenchida é descartado em silêncio. */}
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                value={form.website}
+                onChange={set('website')}
+                className="absolute w-px h-px -m-px overflow-hidden opacity-0 pointer-events-none"
+              />
               <div className="grid sm:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Nome Completo</label>
-                    <input type="text" placeholder="Seu nome" className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans" />
+                    <label htmlFor="lead-nome" className="text-xs font-bold uppercase tracking-widest text-slate-500">Nome Completo</label>
+                    <input id="lead-nome" name="nome" type="text" required value={form.nome} onChange={set('nome')} placeholder="Seu nome" className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans" />
                  </div>
                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-slate-500">WhatsApp</label>
-                    <input type="tel" placeholder="(27) 00000-0000" className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans" />
+                    <label htmlFor="lead-whatsapp" className="text-xs font-bold uppercase tracking-widest text-slate-500">WhatsApp</label>
+                    <input id="lead-whatsapp" name="whatsapp" type="tel" required value={form.whatsapp} onChange={set('whatsapp')} placeholder="(27) 00000-0000" className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans" />
                  </div>
               </div>
               <div className="space-y-2">
-                 <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Protocolo de Interesse</label>
-                 <select className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans appearance-none cursor-pointer">
-                    <option>Selecione uma opção</option>
+                 <label htmlFor="lead-protocolo" className="text-xs font-bold uppercase tracking-widest text-slate-500">Protocolo de Interesse</label>
+                 <select id="lead-protocolo" name="protocolo" value={form.protocolo} onChange={set('protocolo')} className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans appearance-none cursor-pointer">
+                    <option value="">Selecione uma opção</option>
                     {protocols.map((protocol) => (
-                      <option key={protocol.slug}>{protocol.name}</option>
+                      <option key={protocol.slug} value={protocol.slug}>{protocol.name}</option>
                     ))}
-                    <option>Outros</option>
+                    <option value="outros">Outros</option>
                  </select>
               </div>
               <div className="space-y-2">
-                 <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Mensagem (Opcional)</label>
-                 <textarea rows={4} placeholder="Diga-nos como podemos te ajudar..." className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans resize-none"></textarea>
+                 <label htmlFor="lead-mensagem" className="text-xs font-bold uppercase tracking-widest text-slate-500">Mensagem (Opcional)</label>
+                 <textarea id="lead-mensagem" name="mensagem" rows={4} value={form.mensagem} onChange={set('mensagem')} placeholder="Diga-nos como podemos te ajudar..." className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans resize-none"></textarea>
               </div>
-              <button className="w-full bg-brand-accent text-white py-5 rounded-2xl font-bold text-lg hover:opacity-90 hover:shadow-xl hover:shadow-slate-200 transition-all">
-                Enviar Mensagem
+              {status === 'error' && (
+                <p role="alert" className="text-sm text-red-600 leading-relaxed">
+                  Não conseguimos enviar agora.{' '}
+                  <a href={whatsappLink('Olá! Tentei enviar o formulário do site e não consegui.')} target="_blank" rel="noopener noreferrer" className="underline font-bold">
+                    Fale com a gente no WhatsApp
+                  </a>{' '}
+                  para não perder o seu contato.
+                </p>
+              )}
+              <button type="submit" disabled={status === 'sending'} className="w-full bg-brand-accent text-white py-5 rounded-2xl font-bold text-lg hover:opacity-90 hover:shadow-xl hover:shadow-slate-200 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                {status === 'sending' ? 'Enviando...' : 'Enviar Mensagem'}
               </button>
            </form>
+           )}
         </div>
       </div>
     </section>

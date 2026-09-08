@@ -2,7 +2,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ProtocolPage } from './ProtocolPage';
 import { rejuvenescimentoFacial } from '../data/protocols';
+import { initAnalytics } from '../lib/analytics';
 import '../index.css';
+
+initAnalytics();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
