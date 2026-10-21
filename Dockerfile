@@ -7,7 +7,10 @@ COPY . .
 # O Vite resolve import.meta.env no momento do BUILD e grava o valor dentro do JS. Uma
 # variável definida só no runtime do container chega tarde demais e o site sai sem medição
 # e com o formulário sem destino — por isso elas entram como build args.
-# No Easypanel: Service > Build > Build args.
+# No Easypanel: aba Environment do serviço (o painel repassa essas variáveis como build args;
+# não existe tela de "Build args" nesta versão). Atenção: mudar só uma variável e clicar em
+# Deploy NÃO refaz o build — com o mesmo commit o Easypanel reaproveita a imagem antiga. Para
+# a variável nova valer, publique um commit novo.
 ARG VITE_GA4_MEASUREMENT_ID
 ARG VITE_LEAD_WEBHOOK_URL
 ARG VITE_META_PIXEL_ID
