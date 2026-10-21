@@ -5,6 +5,8 @@ interface ImportMetaEnv {
   readonly VITE_GA4_MEASUREMENT_ID?: string;
   /** Webhook do n8n que recebe o formulário e o repassa ao CRM com o segredo. */
   readonly VITE_LEAD_WEBHOOK_URL?: string;
+  /** Id do Pixel / conjunto de dados do Meta. Carregado só no quiz (/avaliacao). */
+  readonly VITE_META_PIXEL_ID?: string;
 }
 
 interface ImportMeta {

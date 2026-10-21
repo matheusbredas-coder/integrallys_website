@@ -21,6 +21,8 @@ export default defineConfig(({mode}) => {
             __dirname,
             'protocolos/emagrecimento-integrado/index.html',
           ),
+          // Quiz de qualificação, destino dos anúncios: sem menu nem rodapé.
+          avaliacao: path.resolve(__dirname, 'avaliacao/index.html'),
         },
       },
     },

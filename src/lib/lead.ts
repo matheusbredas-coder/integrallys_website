@@ -53,3 +53,46 @@ export async function submitLead(payload: LeadPayload): Promise<LeadResult> {
     return { ok: false, reason: "network" };
   }
 }
+
+export type QuizLeadPayload = {
+  nome: string;
+  whatsapp: string;
+  protocolo: string;
+  /** "quente" ou "fria" — o CRM guarda em `raw`, e é por ele que a equipe prioriza. */
+  qualificacao: string;
+  /** Cada resposta do quiz, já com o texto que a pessoa viu, rótulo → resposta. */
+  respostas: Record<string, string>;
+  website: string;
+};
+
+/**
+ * Envio do quiz de qualificação (/avaliacao). Mesmo webhook do formulário de contato, com
+ * `source: "site_quiz"`. As respostas vão como colunas soltas: o CRM não reconhece esses
+ * rótulos, e por isso mesmo guarda cada um em `raw`, onde a equipe lê.
+ */
+export async function submitQuizLead(payload: QuizLeadPayload): Promise<LeadResult> {
+  if (payload.website.trim() !== "") return { ok: true };
+
+  if (!WEBHOOK_URL) return { ok: false, reason: "config" };
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        source: "site_quiz",
+        protocolo: payload.protocolo,
+        "Nome completo": payload.nome,
+        WhatsApp: payload.whatsapp,
+        "Nome do formulário": "Site — quiz de avaliação",
+        "Protocolo de interesse": payload.protocolo,
+        Qualificação: payload.qualificacao,
+        ...payload.respostas,
+        submitted_at: new Date().toISOString(),
+      }),
+    });
+    return res.ok ? { ok: true } : { ok: false, reason: "network" };
+  } catch {
+    return { ok: false, reason: "network" };
+  }
+}
