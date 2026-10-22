@@ -417,7 +417,7 @@ export function Quiz() {
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-slate-900">{RECEPTION_NAME} · Integrallys</p>
-                  <p className="text-lg font-bold tabular-nums tracking-tight text-brand-accent">{RECEPTION_PHONE_DISPLAY}</p>
+                  <p className="text-[1.35rem] font-bold leading-tight tabular-nums tracking-tight text-brand-accent sm:text-2xl">{RECEPTION_PHONE_DISPLAY}</p>
                 </div>
               </div>
             </div>
