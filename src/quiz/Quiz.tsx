@@ -85,14 +85,14 @@ const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter((x
 
 /**
  * Só em desenvolvimento (`npm run dev`): `?tela=fimQuente&nome=Maria` abre direto numa tela
- * (`&fora` simula fora do horário comercial), para revisar as telas finais sem preencher o quiz. No build de produção `import.meta.env.DEV`
+ * (`&fora` / `&dentro` forçam fora ou dentro do horário comercial), para revisar as telas finais sem preencher o quiz. No build de produção `import.meta.env.DEV`
  * é falso e isto some do código.
  */
-function devStart(): { screen: Screen; nome: string; foraDoHorario: boolean } | null {
+function devStart(): { screen: Screen; nome: string; horario: 'fora' | 'dentro' | null } | null {
   if (!import.meta.env.DEV || typeof window === 'undefined') return null;
   const q = new URLSearchParams(window.location.search);
   const tela = q.get('tela') as Screen | null;
-  return tela ? { screen: tela, nome: q.get('nome') ?? '', foraDoHorario: q.has('fora') } : null;
+  return tela ? { screen: tela, nome: q.get('nome') ?? '', horario: q.has('fora') ? 'fora' : q.has('dentro') ? 'dentro' : null } : null;
 }
 
 export function Quiz() {
@@ -405,7 +405,7 @@ export function Quiz() {
                 <BellRing size={24} className="mt-0.5 shrink-0 text-brand-gold" />
                 <p className="text-sm leading-snug text-slate-900 sm:text-base">
                   <strong>Deixe o celular com o som ligado.</strong> A {RECEPTION_NAME}, da nossa recepção, vai te
-                  ligar {devStart()?.foraDoHorario || !isBusinessHours()
+                  ligar {!(devStart()?.horario ? devStart()?.horario === 'dentro' : isBusinessHours())
                     ? 'no próximo horário comercial (seg. a sex., das 9h às 19h)'
                     : 'em até 10 minutos'}{' '}
                   deste número:
