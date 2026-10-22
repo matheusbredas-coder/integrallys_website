@@ -8,3 +8,10 @@ export const PHONE_DISPLAY = '(27) 99968-7380';
 /** Abre o WhatsApp da clínica com uma mensagem já preenchida. */
 export const whatsappLink = (message: string) =>
   `${WHATSAPP_URL}?text=${encodeURIComponent(message)}`;
+
+/**
+ * Quem liga para a lead que termina o quiz (/avaliacao). Aparece na tela final para a pessoa
+ * reconhecer a ligação — trocou a recepcionista ou o celular, troque aqui.
+ */
+export const RECEPTION_NAME = 'Gabriela';
+export const RECEPTION_PHONE_DISPLAY = '(28) 99967-6542';

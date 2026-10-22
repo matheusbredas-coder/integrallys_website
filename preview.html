@@ -77,6 +77,11 @@
       </div>
       <span class="size" id="size"></span>
       <a href="#" id="reload">Recomeçar o quiz</a>
+      <span class="size">Telas finais:</span>
+      <a href="#" data-tela="fimQuente">Obrigado (lead boa)</a>
+      <a href="#" data-tela="fimQuente&fora">Obrigado (lead boa, à noite)</a>
+      <a href="#" data-tela="fimFria">Obrigado (fria)</a>
+      <a href="#" data-tela="fimFora">Fora da área</a>
     </header>
     <main>
       <div class="frame" id="frame">
@@ -96,6 +101,13 @@
       }
 
       buttons.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+      // Abre direto numa tela final (só funciona no npm run dev; ver devStart em Quiz.tsx).
+      document.querySelectorAll('[data-tela]').forEach((a) =>
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.getElementById('quiz').src = '/avaliacao/?tela=' + a.dataset.tela + '&nome=Maria';
+        }),
+      );
       document.getElementById('reload').addEventListener('click', (e) => {
         e.preventDefault();
         document.getElementById('quiz').src = '/avaliacao/';

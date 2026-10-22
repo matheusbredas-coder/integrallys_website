@@ -1,12 +1,12 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BellRing, CalendarCheck, CheckCircle, Clock, Gift, Heart, MapPin, X } from 'lucide-react';
+import { BellRing, CalendarCheck, CheckCircle, Clock, Gift, Heart, MapPin, Phone, X } from 'lucide-react';
 import logoImg from '../assets/images/logo.jpg';
 import heroImg from '../assets/images/emagrecimento.webp';
 import { trackEvent } from '../lib/analytics';
 import { trackPixel, trackPixelCustom } from '../lib/pixel';
 import { submitQuizLead } from '../lib/lead';
-import { whatsappLink } from '../lib/constants';
+import { RECEPTION_NAME, RECEPTION_PHONE_DISPLAY, whatsappLink } from '../lib/constants';
 import { CityMap } from './CityMap';
 import { CITIES, type CityId } from './grande-vitoria-map';
 import {
@@ -64,13 +64,45 @@ function maskPhone(value: string): string {
   return `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
 }
 
+/**
+ * A Gabriela liga em até 10 minutos, mas só em horário comercial: seg. a sex., 9h às 19h,
+ * no horário de Brasília (vale para quem abre o quiz de qualquer fuso). Fora disso a tela
+ * promete o próximo expediente em vez de deixar a pessoa esperando à noite.
+ */
+function isBusinessHours(now = new Date()): boolean {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Sao_Paulo',
+    weekday: 'short',
+    hour: 'numeric',
+    hourCycle: 'h23',
+  }).formatToParts(now);
+  const day = parts.find((p) => p.type === 'weekday')?.value;
+  const hour = Number(parts.find((p) => p.type === 'hour')?.value);
+  return day !== 'Sat' && day !== 'Sun' && hour >= 9 && hour < 19;
+}
+
 const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter((x) => x !== item) : [...list, item]);
 
+/**
+ * Só em desenvolvimento (`npm run dev`): `?tela=fimQuente&nome=Maria` abre direto numa tela
+ * (`&fora` simula fora do horário comercial), para revisar as telas finais sem preencher o quiz. No build de produção `import.meta.env.DEV`
+ * é falso e isto some do código.
+ */
+function devStart(): { screen: Screen; nome: string; foraDoHorario: boolean } | null {
+  if (!import.meta.env.DEV || typeof window === 'undefined') return null;
+  const q = new URLSearchParams(window.location.search);
+  const tela = q.get('tela') as Screen | null;
+  return tela ? { screen: tela, nome: q.get('nome') ?? '', foraDoHorario: q.has('fora') } : null;
+}
+
 export function Quiz() {
-  const [history, setHistory] = useState<Screen[]>(['capa']);
+  const [history, setHistory] = useState<Screen[]>(() => {
+    const dev = devStart();
+    return dev ? ['capa', dev.screen] : ['capa'];
+  });
   const screen = history[history.length - 1];
   const [answers, setAnswers] = useState<Answers>({ incomodo: [], regioes: [] });
-  const [contact, setContact] = useState({ nome: '', whatsapp: '', website: '' });
+  const [contact, setContact] = useState(() => ({ nome: devStart()?.nome ?? '', whatsapp: '', website: '' }));
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
 
   const go = (next: Screen) => setHistory((h) => [...h, next]);
@@ -363,17 +395,33 @@ export function Quiz() {
       case 'fimQuente':
         return (
           <Ending icon={<CheckCircle size={34} />} eyebrow="Tudo certo" title={`Parabéns${firstName ? `, ${firstName}` : ''}!`}>
-            <p className="mb-5 text-brand-muted">Pelas suas respostas, o protocolo indicado para você é:</p>
-            <div className="mb-6 rounded-3xl bg-brand-accent px-6 py-5 text-white">
+            <p className="mb-3 text-sm text-brand-muted sm:mb-5 sm:text-base">Pelas suas respostas, o protocolo indicado para você é:</p>
+            <div className="mb-4 rounded-3xl bg-brand-accent px-6 py-3 text-white sm:mb-6 sm:py-5">
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">Protocolo indicado</span>
-              <p className="mt-2 font-serif text-2xl font-bold sm:text-3xl">{protocolOf(answers).name}</p>
+              <p className="mt-1 font-serif text-xl font-bold sm:mt-2 sm:text-3xl">{protocolOf(answers).name}</p>
             </div>
-            <div className="flex items-start gap-4 rounded-2xl border border-brand-gold/50 bg-brand-gold/10 px-5 py-4 text-left">
-              <BellRing size={26} className="mt-0.5 shrink-0 text-brand-gold" />
-              <p className="text-slate-900">
-                <strong>Deixe o celular com o som ligado.</strong> Nossa equipe vai te chamar no WhatsApp em breve para
-                liberar a sua promoção.
-              </p>
+            <div className="rounded-2xl border border-brand-gold/50 bg-brand-gold/10 px-4 py-3 text-left sm:px-5 sm:py-4">
+              <div className="flex items-start gap-3">
+                <BellRing size={24} className="mt-0.5 shrink-0 text-brand-gold" />
+                <p className="text-sm leading-snug text-slate-900 sm:text-base">
+                  <strong>Deixe o celular com o som ligado.</strong> A {RECEPTION_NAME}, da nossa recepção, vai te
+                  ligar {devStart()?.foraDoHorario || !isBusinessHours()
+                    ? 'no próximo horário comercial (seg. a sex., das 9h às 19h)'
+                    : 'em até 10 minutos'}{' '}
+                  deste número:
+                </p>
+              </div>
+              <div className="mt-3 flex items-center gap-3 rounded-xl bg-white px-4 py-2.5 sm:py-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-accent font-serif text-lg font-bold text-white">
+                  {RECEPTION_NAME[0]}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-slate-900">{RECEPTION_NAME} · Integrallys</p>
+                  <p className="flex items-center gap-1.5 text-lg font-bold tabular-nums tracking-tight text-brand-accent">
+                    <Phone size={16} className="shrink-0" /> {RECEPTION_PHONE_DISPLAY}
+                  </p>
+                </div>
+              </div>
             </div>
           </Ending>
         );
@@ -496,12 +544,12 @@ function Ending({
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-        className="mx-auto mb-5 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-brand-gold text-white shadow-lg shadow-brand-gold/30"
+        className="mx-auto mb-3 flex h-14 w-14 shrink-0 items-center sm:mb-5 sm:h-16 sm:w-16 justify-center rounded-full bg-brand-gold text-white shadow-lg shadow-brand-gold/30"
       >
         {icon}
       </motion.div>
       <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">{eyebrow}</span>
-      <h2 className="mb-4 mt-2 font-serif text-3xl font-bold tracking-tight text-brand-accent sm:text-4xl">{title}</h2>
+      <h2 className="mb-3 mt-1 font-serif text-[1.75rem] font-bold leading-tight tracking-tight text-brand-accent sm:mb-4 sm:mt-2 sm:text-4xl">{title}</h2>
       {children}
     </div>
   );
