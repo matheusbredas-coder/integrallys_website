@@ -412,14 +412,12 @@ export function Quiz() {
                 </p>
               </div>
               <div className="mt-3 flex items-center gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-accent font-serif text-lg font-bold text-white">
-                  {RECEPTION_NAME[0]}
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-accent text-white">
+                  <Phone size={18} />
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-slate-900">{RECEPTION_NAME} · Integrallys</p>
-                  <p className="flex items-center gap-1.5 text-lg font-bold tabular-nums tracking-tight text-brand-accent">
-                    <Phone size={16} className="shrink-0" /> {RECEPTION_PHONE_DISPLAY}
-                  </p>
+                  <p className="text-lg font-bold tabular-nums tracking-tight text-brand-accent">{RECEPTION_PHONE_DISPLAY}</p>
                 </div>
               </div>
             </div>
