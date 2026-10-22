@@ -11,7 +11,8 @@ export const whatsappLink = (message: string) =>
 
 /**
  * Quem liga para a lead que termina o quiz (/avaliacao). Aparece na tela final para a pessoa
- * reconhecer a ligação — trocou a recepcionista ou o celular, troque aqui.
+ * reconhecer a ligação — trocou a recepcionista ou o celular, troque aqui E no cartão de
+ * contato `public/integrallys.vcf` (o botão "Salvar contato"), que é um arquivo estático.
  */
 export const RECEPTION_NAME = 'Gabriela';
 export const RECEPTION_PHONE_DISPLAY = '(28) 99967-6542';

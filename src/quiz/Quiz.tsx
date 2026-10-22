@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BellRing, CalendarCheck, CheckCircle, Clock, Gift, Heart, MapPin, Phone, X } from 'lucide-react';
+import { BellRing, CalendarCheck, CheckCircle, Clock, Gift, Heart, MapPin, Phone, UserPlus, X } from 'lucide-react';
 import logoImg from '../assets/images/logo.jpg';
 import heroImg from '../assets/images/emagrecimento.webp';
 import { trackEvent } from '../lib/analytics';
@@ -422,6 +422,17 @@ export function Quiz() {
                   </p>
                 </div>
               </div>
+              {/* Salva o número na agenda como "Integrallys": a ligação já chega com o nome.
+                  O nginx entrega o .vcf como text/vcard (nginx/vcard.conf) — é o que faz o
+                  iPhone abrir "Adicionar contato" em vez de baixar um arquivo. Sem `download`
+                  de propósito, pelo mesmo motivo. */}
+              <a
+                href="/integrallys.vcf"
+                onClick={() => trackEvent('save_contact', { method: 'quiz' })}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent py-2.5 text-sm font-semibold text-white transition-all hover:brightness-125"
+              >
+                <UserPlus size={16} /> Salvar contato como “Integrallys”
+              </a>
             </div>
           </Ending>
         );
