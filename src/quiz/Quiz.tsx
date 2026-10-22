@@ -411,7 +411,7 @@ export function Quiz() {
                   deste número:
                 </p>
               </div>
-              <div className="mt-3 flex items-center gap-3 rounded-xl bg-white px-4 py-2.5 sm:py-3">
+              <div className="mt-3 flex items-center gap-3">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-accent font-serif text-lg font-bold text-white">
                   {RECEPTION_NAME[0]}
                 </span>
@@ -422,18 +422,18 @@ export function Quiz() {
                   </p>
                 </div>
               </div>
-              {/* Salva o número na agenda como "Integrallys": a ligação já chega com o nome.
-                  O nginx entrega o .vcf como text/vcard (nginx/vcard.conf) — é o que faz o
-                  iPhone abrir "Adicionar contato" em vez de baixar um arquivo. Sem `download`
-                  de propósito, pelo mesmo motivo. */}
-              <a
-                href="/integrallys.vcf"
-                onClick={() => trackEvent('save_contact', { method: 'quiz' })}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent py-2.5 text-sm font-semibold text-white transition-all hover:brightness-125"
-              >
-                <UserPlus size={16} /> Salvar Contato
-              </a>
             </div>
+            {/* Salva o número na agenda como "Integrallys": a ligação já chega com o nome.
+                O nginx entrega o .vcf como text/vcard (nginx/vcard.conf) — é o que faz o
+                iPhone abrir "Adicionar contato" em vez de baixar um arquivo. Sem `download`
+                de propósito, pelo mesmo motivo. */}
+            <a
+              href="/integrallys.vcf"
+              onClick={() => trackEvent('save_contact', { method: 'quiz' })}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent py-3 text-sm font-semibold text-white shadow-lg shadow-brand-accent/20 transition-all hover:brightness-125 sm:mt-4"
+            >
+              <UserPlus size={16} /> Salvar Contato
+            </a>
           </Ending>
         );
 
