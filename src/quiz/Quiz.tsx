@@ -395,8 +395,8 @@ export function Quiz() {
       case 'fimQuente':
         return (
           <Ending icon={<CheckCircle size={34} />} eyebrow="Tudo certo" title={`Parabéns${firstName ? `, ${firstName}` : ''}!`}>
-            <p className="mb-3 text-sm text-brand-muted sm:mb-5 sm:text-base">Pelas suas respostas, o protocolo indicado para você é:</p>
-            <div className="mb-4 rounded-3xl bg-brand-accent px-6 py-3 text-white sm:mb-6 sm:py-5">
+            <p className="mb-2 text-sm text-brand-muted sm:mb-5 sm:text-base">Pelas suas respostas, o protocolo indicado para você é:</p>
+            <div className="mb-4 rounded-3xl bg-brand-accent px-6 pb-5 pt-3 text-white sm:mb-6 sm:py-6">
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">Protocolo indicado</span>
               <p className="mt-1 font-serif text-[1.75rem] font-bold leading-tight sm:mt-2 sm:text-4xl">{protocolOf(answers).name}</p>
             </div>
