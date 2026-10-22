@@ -431,7 +431,7 @@ export function Quiz() {
                 onClick={() => trackEvent('save_contact', { method: 'quiz' })}
                 className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent py-2.5 text-sm font-semibold text-white transition-all hover:brightness-125"
               >
-                <UserPlus size={16} /> Salvar contato como “Integrallys”
+                <UserPlus size={16} /> Salvar Contato
               </a>
             </div>
           </Ending>
