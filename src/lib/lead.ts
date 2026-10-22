@@ -7,6 +7,8 @@
  * Meta já percorrem hoje.
  */
 
+import { attributionFields } from './attribution';
+
 const WEBHOOK_URL = import.meta.env.VITE_LEAD_WEBHOOK_URL as string | undefined;
 
 export type LeadPayload = {
@@ -45,6 +47,7 @@ export async function submitLead(payload: LeadPayload): Promise<LeadResult> {
         "Nome do formulário": "Site — formulário de contato",
         "Protocolo de interesse": payload.protocolo,
         Mensagem: payload.mensagem,
+        ...attributionFields(),
         submitted_at: new Date().toISOString(),
       }),
     });
@@ -88,6 +91,7 @@ export async function submitQuizLead(payload: QuizLeadPayload): Promise<LeadResu
         "Protocolo de interesse": payload.protocolo,
         Qualificação: payload.qualificacao,
         ...payload.respostas,
+        ...attributionFields(),
         submitted_at: new Date().toISOString(),
       }),
     });
