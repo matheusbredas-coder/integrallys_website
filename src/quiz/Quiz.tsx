@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BellRing, CalendarCheck, CheckCircle, Clock, Gift, Heart, MapPin, Phone, Sparkles, UserPlus, X } from 'lucide-react';
+import { BellRing, CalendarCheck, CheckCircle, Clock, Gift, Heart, MapPin, Phone, UserPlus, X } from 'lucide-react';
 import logoImg from '../assets/images/logo.jpg';
 import heroImg from '../assets/images/emagrecimento.webp';
 import { trackEvent } from '../lib/analytics';
@@ -101,10 +101,7 @@ export function Quiz() {
     return dev ? ['capa', dev.screen] : ['capa'];
   });
   const screen = history[history.length - 1];
-  const [answers, setAnswers] = useState<Answers>(() =>
-    // Na prévia (dev) a tela final abre sem quiz respondido; estas respostas só existem lá.
-    devStart() ? { incomodo: ['gordura', 'peso'], regioes: ['barriga', 'flancos'] } : { incomodo: [], regioes: [] },
-  );
+  const [answers, setAnswers] = useState<Answers>({ incomodo: [], regioes: [] });
   const [contact, setContact] = useState(() => ({ nome: devStart()?.nome ?? '', whatsapp: '', website: '' }));
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
 
@@ -398,7 +395,11 @@ export function Quiz() {
       case 'fimQuente':
         return (
           <Ending icon={<CheckCircle size={34} />} eyebrow="Tudo certo" title={`Parabéns${firstName ? `, ${firstName}` : ''}!`}>
-            <ProtocolCard name={protocolOf(answers).name} tags={answerTags(answers)} />
+            <p className="mb-3 text-sm text-brand-muted sm:mb-5 sm:text-base">Pelas suas respostas, o protocolo indicado para você é:</p>
+            <div className="mb-4 rounded-3xl bg-brand-accent px-6 py-3 text-white sm:mb-6 sm:py-5">
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">Protocolo indicado</span>
+              <p className="mt-1 font-serif text-[1.75rem] font-bold leading-tight sm:mt-2 sm:text-4xl">{protocolOf(answers).name}</p>
+            </div>
             <div className="rounded-2xl border border-brand-gold/50 bg-brand-gold/10 px-4 py-3 text-left sm:px-5 sm:py-4">
               <div className="flex items-start gap-3">
                 <BellRing size={24} className="mt-0.5 shrink-0 text-brand-gold" />
@@ -533,44 +534,6 @@ function Question({
         {note && <p className="text-sm text-brand-muted">{note}</p>}
         <ContinueButton disabled={disabled} onClick={onNext} />
       </div>
-    </div>
-  );
-}
-
-/** O que ela marcou nos passos 1 e 2, em etiquetas: mostra que a indicação é dela. */
-function answerTags(a: Answers): string[] {
-  const all = [...a.incomodo.map((v) => labelOf(INCOMODO, v)), ...a.regioes.map((v) => labelOf(REGIOES, v))];
-  // Uma linha só, mesmo no celular pequeno: passou de 3, mostra 2 e um "+N".
-  return all.length > 3 ? [...all.slice(0, 2), `+${all.length - 2}`] : all;
-}
-
-/** O resultado do quiz, com cara de certificado: selo dourado, nome do protocolo e as respostas. */
-function ProtocolCard({ name, tags }: { name: string; tags: string[] }) {
-  return (
-    <div className="relative mb-4 shrink-0 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-accent via-brand-accent to-[#0f3a4e] p-4 text-left text-white shadow-xl shadow-brand-accent/25 ring-1 ring-brand-gold/35 sm:mb-6 sm:p-6">
-      {/* brilho dourado no canto */}
-      <span aria-hidden="true" className="pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full bg-brand-gold/10 blur-3xl" />
-      <div className="relative flex items-center gap-3 sm:gap-4">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/5 text-brand-gold ring-1 ring-brand-gold/50 sm:h-14 sm:w-14">
-          <Sparkles size={24} strokeWidth={1.75} />
-        </span>
-        <div className="min-w-0">
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">Seu protocolo indicado</span>
-          <p className="mt-0.5 font-serif text-[1.35rem] font-bold leading-tight sm:text-3xl">{name}</p>
-        </div>
-      </div>
-      {tags.length > 0 && (
-        <div className="relative mt-3 flex items-center gap-2 border-t border-white/10 pt-3 sm:mt-4 sm:pt-4">
-          <span className="hidden shrink-0 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50 sm:inline">Feito para</span>
-          <div className="flex gap-1.5 overflow-hidden">
-            {tags.map((t) => (
-              <span key={t} className="shrink-0 whitespace-nowrap rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white/90 ring-1 ring-white/15">
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
