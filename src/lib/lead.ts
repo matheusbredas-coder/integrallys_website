@@ -8,6 +8,7 @@
  */
 
 import { attributionFields } from './attribution';
+import { isValidBrMobile } from './phone';
 
 const WEBHOOK_URL = import.meta.env.VITE_LEAD_WEBHOOK_URL as string | undefined;
 
@@ -20,7 +21,20 @@ export type LeadPayload = {
   website: string;
 };
 
-export type LeadResult = { ok: true } | { ok: false; reason: "spam" | "config" | "network" };
+/**
+ * `duplicate`: o CRM já tinha esse telefone (últimos 30 dias) e só anotou o reenvio. Quem
+ * chama NÃO deve disparar o `Lead` do Meta de novo.
+ */
+export type LeadResult = { ok: true; duplicate: boolean } | { ok: false; reason: "spam" | "config" | "network" | "phone" };
+
+async function readDuplicate(res: Response): Promise<boolean> {
+  try {
+    const body = (await res.json()) as { duplicate?: unknown };
+    return body.duplicate === true;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Os rótulos vão em português porque é assim que o CRM os reconhece: ele normaliza a chave
@@ -30,8 +44,10 @@ export type LeadResult = { ok: true } | { ok: false; reason: "spam" | "config" |
  */
 export async function submitLead(payload: LeadPayload): Promise<LeadResult> {
   // Robô que preencheu a armadilha: respondemos sucesso e não enviamos nada, para ele não
-  // ficar tentando outra vez com outro preenchimento.
-  if (payload.website.trim() !== "") return { ok: true };
+  // ficar tentando outra vez com outro preenchimento. `duplicate: true` para o quiz também
+  // não disparar o `Lead` de um robô.
+  if (payload.website.trim() !== "") return { ok: true, duplicate: true };
+  if (!isValidBrMobile(payload.whatsapp)) return { ok: false, reason: "phone" };
 
   if (!WEBHOOK_URL) return { ok: false, reason: "config" };
 
@@ -51,7 +67,7 @@ export async function submitLead(payload: LeadPayload): Promise<LeadResult> {
         submitted_at: new Date().toISOString(),
       }),
     });
-    return res.ok ? { ok: true } : { ok: false, reason: "network" };
+    return res.ok ? { ok: true, duplicate: await readDuplicate(res) } : { ok: false, reason: "network" };
   } catch {
     return { ok: false, reason: "network" };
   }
@@ -74,7 +90,8 @@ export type QuizLeadPayload = {
  * rótulos, e por isso mesmo guarda cada um em `raw`, onde a equipe lê.
  */
 export async function submitQuizLead(payload: QuizLeadPayload): Promise<LeadResult> {
-  if (payload.website.trim() !== "") return { ok: true };
+  if (payload.website.trim() !== "") return { ok: true, duplicate: true };
+  if (!isValidBrMobile(payload.whatsapp)) return { ok: false, reason: "phone" };
 
   if (!WEBHOOK_URL) return { ok: false, reason: "config" };
 
@@ -95,7 +112,7 @@ export async function submitQuizLead(payload: QuizLeadPayload): Promise<LeadResu
         submitted_at: new Date().toISOString(),
       }),
     });
-    return res.ok ? { ok: true } : { ok: false, reason: "network" };
+    return res.ok ? { ok: true, duplicate: await readDuplicate(res) } : { ok: false, reason: "network" };
   } catch {
     return { ok: false, reason: "network" };
   }

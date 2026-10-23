@@ -85,14 +85,25 @@ export type Answers = {
   inicio?: Inicio;
 };
 
-export type Tier = 'quente' | 'fria';
+export type Tier = 'quente' | 'fria qualificada' | 'fria';
 
 /**
- * Quem chega ao contato já passou pela área (ou topou vir toda semana), então o que
- * decide aqui é só o orçamento. "Fora" não tem tier: termina antes de pedir o contato.
+ * Quem chega ao contato já passou pela área (ou topou vir toda semana). Daí:
+ * - até R$ 100 por mês → "fria": não dispara `Lead`;
+ * - orçamento ok, mas "só estou pesquisando" → "fria qualificada": DISPARA `Lead` (decisão do
+ *   Matheus, 23/10 — ela se qualifica, só não tem pressa), e o CRM mostra a etiqueta para a
+ *   equipe saber que não é para hoje;
+ * - o resto → "quente".
+ * "Fora" não tem tier: termina antes de pedir o contato.
  */
 export function tierOf(a: Answers): Tier {
-  return a.verba === 'ate100' ? 'fria' : 'quente';
+  if (a.verba === 'ate100') return 'fria';
+  return a.inicio === 'pesquisando' ? 'fria qualificada' : 'quente';
+}
+
+/** Só "fria" fica de fora do `Lead` do Meta. */
+export function firesLead(tier: Tier): boolean {
+  return tier !== 'fria';
 }
 
 export type ProtocolSlug = 'emagrecimento-integrado' | 'rejuvenescimento-facial';

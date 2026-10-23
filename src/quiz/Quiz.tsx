@@ -4,7 +4,9 @@ import { BellRing, CalendarCheck, CheckCircle, Clock, Gift, Heart, MapPin, Phone
 import logoImg from '../assets/images/logo.jpg';
 import heroImg from '../assets/images/emagrecimento.webp';
 import { trackEvent } from '../lib/analytics';
-import { trackPixel, trackPixelCustom } from '../lib/pixel';
+import { identifyPixelUser, trackPixel, trackPixelCustom } from '../lib/pixel';
+import { isValidBrMobile, nationalDigits } from '../lib/phone';
+import { leadEventId, markSentFromThisBrowser, sentFromThisBrowser } from '../lib/leadOnce';
 import { submitQuizLead } from '../lib/lead';
 import { RECEPTION_NAME, RECEPTION_PHONE_DISPLAY, whatsappLink } from '../lib/constants';
 import { CityMap } from './CityMap';
@@ -18,6 +20,7 @@ import {
   labelOf,
   protocolOf,
   tierOf,
+  firesLead,
   type Answers,
   type Option,
   type Semanal,
@@ -125,8 +128,11 @@ export function Quiz() {
     go('fimFora');
   };
 
-  const phoneDigits = contact.whatsapp.replace(/\D/g, '');
-  const contactValid = contact.nome.trim().length >= 2 && phoneDigits.length >= 10;
+  const phoneDigits = nationalDigits(contact.whatsapp);
+  const phoneValid = isValidBrMobile(contact.whatsapp);
+  // Só reclama depois do número inteiro digitado, para não piscar erro a cada tecla.
+  const phoneWrong = phoneDigits.length >= 11 && !phoneValid;
+  const contactValid = contact.nome.trim().length >= 2 && phoneValid;
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -157,12 +163,22 @@ export function Quiz() {
       return;
     }
 
-    trackEvent('generate_lead', { method: 'quiz', qualificacao: tier, protocolo: protocol.slug });
-    if (tier === 'quente') {
-      trackPixel('Lead', { content_name: protocol.name });
+    trackEvent('generate_lead', { method: 'quiz', qualificacao: tier, protocolo: protocol.slug, repetida: result.duplicate });
+    // Um Lead por pessoa: ver leadOnce.ts. A checagem do navegador vem ANTES de marcar.
+    const repeat = result.duplicate || sentFromThisBrowser();
+    markSentFromThisBrowser();
+    if (firesLead(tier)) {
+      if (!repeat) {
+        identifyPixelUser({
+          phone: phoneDigits,
+          name: contact.nome,
+          city: answers.cidade && IN_AREA.has(answers.cidade) ? cityName(answers.cidade) : undefined,
+        });
+        trackPixel('Lead', { content_name: protocol.name, content_category: tier }, await leadEventId(phoneDigits));
+      }
       go('fimQuente');
     } else {
-      trackPixelCustom('QuizLeadFria');
+      if (!repeat) trackPixelCustom('QuizLeadFria');
       go('fimFria');
     }
     setStatus('idle');
@@ -365,8 +381,15 @@ export function Quiz() {
                   value={contact.whatsapp}
                   onChange={(e) => setContact((c) => ({ ...c, whatsapp: maskPhone(e.target.value) }))}
                   placeholder="(27) 99999-9999"
+                  aria-invalid={phoneWrong}
+                  aria-describedby={phoneWrong ? 'quiz-whatsapp-erro' : undefined}
                   className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-lg outline-none transition-all focus:ring-2 focus:ring-brand-accent/20"
                 />
+                {phoneWrong && (
+                  <p id="quiz-whatsapp-erro" className="text-sm text-red-600">
+                    Confira o número: precisa ser um celular com DDD, como (27) 99876-5432.
+                  </p>
+                )}
               </div>
             </div>
             {status === 'error' && (

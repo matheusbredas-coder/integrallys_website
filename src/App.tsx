@@ -524,7 +524,7 @@ const ContactForm = () => {
     mensagem: '',
     website: '', // armadilha para robô — fica escondida no CSS
   });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'phone'>('idle');
 
   const set = (field: keyof typeof form) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -539,6 +539,10 @@ const ContactForm = () => {
     if (result.ok) {
       setStatus('sent');
       trackEvent('generate_lead', { method: 'formulario_site', protocolo: form.protocolo });
+      return;
+    }
+    if ('reason' in result && result.reason === 'phone') {
+      setStatus('phone');
       return;
     }
     // O lead não pode morrer aqui: a mensagem de erro oferece o WhatsApp, que é para onde
@@ -636,6 +640,11 @@ const ContactForm = () => {
                  <label htmlFor="lead-mensagem" className="text-xs font-bold uppercase tracking-widest text-slate-500">Mensagem (Opcional)</label>
                  <textarea id="lead-mensagem" name="mensagem" rows={4} value={form.mensagem} onChange={set('mensagem')} placeholder="Diga-nos como podemos te ajudar..." className="w-full bg-white border border-slate-200 py-4 px-6 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent/20 transition-all font-sans resize-none"></textarea>
               </div>
+              {status === 'phone' && (
+                <p role="alert" className="text-sm text-red-600 leading-relaxed">
+                  Confira o WhatsApp: precisa ser um celular com DDD, como (27) 99876-5432.
+                </p>
+              )}
               {status === 'error' && (
                 <p role="alert" className="text-sm text-red-600 leading-relaxed">
                   Não conseguimos enviar agora.{' '}

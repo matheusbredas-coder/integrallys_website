@@ -55,10 +55,32 @@ export function initPixel(): void {
   window.fbq('track', 'PageView');
 }
 
-/** Evento padrão do Meta (`Lead`, `CompleteRegistration`…). */
-export function trackPixel(event: string, params: Record<string, unknown> = {}): void {
+/**
+ * Correspondência avançada manual: diz ao Pixel quem é a pessoa ANTES do `Lead`, para o Meta
+ * ligar o evento a uma conta e aprender com ela. Sem isso o `Lead` chega só com cookie, e no
+ * navegador do Instagram muitas vezes nem isso. O próprio Pixel embaralha (SHA-256) antes de
+ * enviar; o formato esperado é minúsculo, sem acento nem espaço, telefone com o 55.
+ */
+export function identifyPixelUser(user: { phone: string; name: string; city?: string }): void {
   if (!PIXEL_ID || !window.fbq) return;
-  window.fbq('track', event, params);
+  const clean = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]/g, '');
+  const [first = '', ...rest] = user.name.trim().split(/\s+/);
+  const data: Record<string, string> = { ph: `55${user.phone}`, fn: clean(first), country: 'br', st: 'es' };
+  const last = rest.length ? clean(rest[rest.length - 1]) : '';
+  if (last) data.ln = last;
+  const city = user.city ? clean(user.city) : '';
+  if (city) data.ct = city;
+  window.fbq('init', PIXEL_ID, data);
+}
+
+/**
+ * Evento padrão do Meta (`Lead`, `CompleteRegistration`…). `eventID` é a chave de
+ * desduplicação: o mesmo id duas vezes conta uma vez só.
+ */
+export function trackPixel(event: string, params: Record<string, unknown> = {}, eventID?: string): void {
+  if (!PIXEL_ID || !window.fbq) return;
+  if (eventID) window.fbq('track', event, params, { eventID });
+  else window.fbq('track', event, params);
 }
 
 /** Evento próprio (`QuizForaDaArea`): serve para relatório e público de exclusão. */
