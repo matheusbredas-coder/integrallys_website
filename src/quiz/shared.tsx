@@ -195,6 +195,8 @@ export function ContactForm({
   status,
   onSubmit,
   whatsappMessage,
+  offer,
+  badge = 'Promoção deste mês',
 }: {
   contact: Contact;
   setContact: Dispatch<SetStateAction<Contact>>;
@@ -202,16 +204,20 @@ export function ContactForm({
   onSubmit: (e: FormEvent) => void;
   /** Mensagem pronta do link de WhatsApp que aparece se o envio falhar. */
   whatsappMessage: string;
+  /** Substitui o título "Falta pouco!" (o quiz do rosto põe a oferta do anúncio aqui). */
+  offer?: ReactNode;
+  /** Texto da etiqueta de cima. */
+  badge?: string;
 }) {
   const { phoneWrong, contactValid } = contactCheck(contact);
   return (
     <form onSubmit={onSubmit} className="mx-auto flex h-full w-full max-w-md flex-col justify-center gap-[clamp(0.75rem,2.5dvh,1.5rem)]">
       <div className="flex justify-center">
         <span className="inline-flex items-center gap-2 rounded-full bg-brand-gold/15 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-accent">
-          <Gift size={14} className="text-brand-gold" /> Promoção deste mês
+          <Gift size={14} className="text-brand-gold" /> {badge}
         </span>
       </div>
-      <QuestionHeader title="Falta pouco! Seu plano está pronto" hint="Preencha para garantir o acesso à promoção deste mês." />
+      {offer ?? <QuestionHeader title="Falta pouco! Seu plano está pronto" hint="Preencha para garantir o acesso à promoção deste mês." />}
       {/* Armadilha de spam, igual à do formulário de contato: só robô preenche. */}
       <input
         type="text"
@@ -280,24 +286,52 @@ export function ContactForm({
   );
 }
 
-/** Tela final de quem a recepção vai ligar: o protocolo indicado e de qual número vem a ligação. */
-export function HotEnding({ firstName, protocolName, icon }: { firstName: string; protocolName: string; icon: ReactNode }) {
+/**
+ * Tela final de quem a recepção vai ligar: o protocolo indicado e de qual número vem a ligação.
+ * O quiz do rosto troca o topo (`eyebrow`, `intro`), o cartão do protocolo (`highlight`) e o
+ * aviso da ligação (`callText`, que recebe se é horário comercial).
+ */
+export function HotEnding({
+  firstName,
+  protocolName,
+  icon,
+  eyebrow = 'Tudo certo',
+  intro = 'Pelas suas respostas, o protocolo indicado para você é:',
+  highlight,
+  callText,
+}: {
+  firstName: string;
+  protocolName: string;
+  icon: ReactNode;
+  eyebrow?: string;
+  intro?: ReactNode;
+  highlight?: ReactNode;
+  callText?: (dentro: boolean) => ReactNode;
+}) {
   const horario = devStart()?.horario;
   const dentro = horario ? horario === 'dentro' : isBusinessHours();
   return (
-    <Ending icon={icon} eyebrow="Tudo certo" title={`Parabéns${firstName ? `, ${firstName}` : ''}!`}>
-      <p className="mb-2 text-sm text-brand-muted sm:mb-5 sm:text-base">Pelas suas respostas, o protocolo indicado para você é:</p>
-      <div className="mb-4 rounded-3xl bg-brand-accent px-6 pb-5 pt-3 text-white sm:mb-6 sm:py-6">
-        <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">Protocolo indicado</span>
-        <p className="mt-1 font-serif text-[1.75rem] font-bold leading-tight sm:mt-2 sm:text-4xl">{protocolName}</p>
-      </div>
+    <Ending icon={icon} eyebrow={eyebrow} title={`Parabéns${firstName ? `, ${firstName}` : ''}!`}>
+      <p className="mb-2 text-sm text-brand-muted sm:mb-5 sm:text-base">{intro}</p>
+      {highlight ?? (
+        <div className="mb-4 rounded-3xl bg-brand-accent px-6 pb-5 pt-3 text-white sm:mb-6 sm:py-6">
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">Protocolo indicado</span>
+          <p className="mt-1 font-serif text-[1.75rem] font-bold leading-tight sm:mt-2 sm:text-4xl">{protocolName}</p>
+        </div>
+      )}
       <div className="rounded-2xl border border-brand-gold/50 bg-brand-gold/10 px-4 py-3 text-left sm:px-5 sm:py-4">
         <div className="flex items-start gap-3">
           <BellRing size={24} className="mt-0.5 shrink-0 text-brand-gold" />
           <p className="text-sm leading-snug text-slate-900 sm:text-base">
-            <strong>Deixe o celular com o som ligado.</strong> A {RECEPTION_NAME}, da nossa recepção, vai te
-            ligar {!dentro ? 'no próximo horário comercial (seg. a sex., das 9h às 19h)' : 'em até 10 minutos'}{' '}
-            deste número:
+            <strong>Deixe o celular com o som ligado.</strong>{' '}
+            {callText ? (
+              callText(dentro)
+            ) : (
+              <>
+                A {RECEPTION_NAME}, da nossa recepção, vai te ligar{' '}
+                {!dentro ? 'no próximo horário comercial (seg. a sex., das 9h às 19h)' : 'em até 10 minutos'} deste número:
+              </>
+            )}
           </p>
         </div>
         <div className="mt-3 flex items-center gap-3">

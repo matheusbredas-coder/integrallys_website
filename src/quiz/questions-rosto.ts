@@ -1,4 +1,4 @@
-import { Sparkles, ThumbsUp } from 'lucide-react';
+import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import type { CityId } from './grande-vitoria-map';
 import type { Inicio, Option, Semanal } from './questions';
 import testaImg from '../assets/images/quiz/testa.jpg';
@@ -24,7 +24,7 @@ export const AREAS_ROSTO: Option<AreaRosto>[] = [
 export type JaFez = 'sim' | 'nao';
 export const JA_FEZ: Option<JaFez>[] = [
   { value: 'sim', label: 'Sim, já fiz', icon: ThumbsUp },
-  { value: 'nao', label: 'Nunca fiz', icon: Sparkles },
+  { value: 'nao', label: 'Nunca fiz', icon: ThumbsDown },
 ];
 
 export type RostoAnswers = {

@@ -1,10 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { CheckCircle, MapPin } from 'lucide-react';
 import heroImg from '../assets/images/hero.jpg';
+import antesImg from '../assets/images/quiz/rosto-antes.jpg';
+import depoisImg from '../assets/images/quiz/rosto-depois.jpg';
 import { trackEvent } from '../lib/analytics';
 import { identifyPixelUser, trackPixel, trackPixelCustom } from '../lib/pixel';
 import { leadEventId, markSentFromThisBrowser, sentFromThisBrowser } from '../lib/leadOnce';
 import { submitQuizLead } from '../lib/lead';
+import { RECEPTION_NAME } from '../lib/constants';
 import { CityMap } from './CityMap';
 import { IN_AREA, INICIOS, labelOf } from './questions';
 import { AREAS_ROSTO, JA_FEZ, ROSTO_PROTOCOL, rostoTierOf, type RostoAnswers } from './questions-rosto';
@@ -130,7 +133,7 @@ export function RostoQuiz() {
             image={heroImg}
             imageClassName="object-[75%_center]"
             title="Descubra o tratamento ideal para o seu rosto"
-            text="Responda 5 perguntas rápidas e receba a indicação da equipe Integrallys feita para você."
+            text="Responda 5 perguntas rápidas para ter acesso a uma oferta exclusiva."
             onStart={() => go('areas')}
           />
         );
@@ -229,12 +232,33 @@ export function RostoQuiz() {
             setContact={setContact}
             status={status}
             onSubmit={submit}
+            badge="Promoção liberada"
+            offer={<RostoOffer />}
             whatsappMessage="Olá! Fiz o quiz do rosto no site e quero saber da promoção deste mês."
           />
         );
 
       case 'fimQuente':
-        return <HotEnding icon={<CheckCircle size={34} />} firstName={firstName} protocolName={ROSTO_PROTOCOL.name} />;
+        return (
+          <HotEnding
+            icon={<CheckCircle size={34} />}
+            firstName={firstName}
+            protocolName={ROSTO_PROTOCOL.name}
+            eyebrow="Promoção garantida"
+            intro={
+              <>
+                Você pegou o <strong className="font-semibold text-brand-accent">Pague 1, leve 4</strong>. Este é o resultado
+                que te espera:
+              </>
+            }
+            highlight={<BeforeAfter />}
+            callText={(dentro) =>
+              `A ${RECEPTION_NAME}, da nossa recepção, vai te ligar ${
+                dentro ? 'nos próximos 15 minutos' : 'no próximo horário comercial (seg. a sex., das 9h às 19h)'
+              } para confirmar a sua sessão.`
+            }
+          />
+        );
 
       case 'fimFora':
         return (
@@ -249,8 +273,135 @@ export function RostoQuiz() {
   })();
 
   return (
-    <QuizShell screen={screen} step={step} labels={STEP_LABELS} onBack={back}>
-      {body}
-    </QuizShell>
+    <>
+      {import.meta.env.DEV && <DevMenu current={screen} onPick={go} />}
+      <QuizShell screen={screen} step={step} labels={STEP_LABELS} onBack={back}>
+        {body}
+      </QuizShell>
+    </>
+  );
+}
+
+/** `horario` força o aviso da ligação da tela final (o `&dentro` / `&fora` do devStart). */
+const DEV_SCREENS: { id: Screen; label: string; horario?: 'dentro' | 'fora' }[] = [
+  { id: 'capa', label: 'Capa' },
+  { id: 'areas', label: '1 Áreas' },
+  { id: 'jaFez', label: '2 Já fez' },
+  { id: 'cidade', label: '3 Cidade' },
+  { id: 'semanal', label: '3b Semanal' },
+  { id: 'inicio', label: '4 Início' },
+  { id: 'contato', label: '5 Contato' },
+  { id: 'fimQuente', label: 'Fim · no horário', horario: 'dentro' },
+  { id: 'fimQuente', label: 'Fim · fora do horário', horario: 'fora' },
+  { id: 'fimFora', label: 'Fim · fora da cidade' },
+];
+
+/**
+ * Só no `npx vite` (localhost): pula para qualquer tela, para revisar sem responder o quiz.
+ * No build de produção `import.meta.env.DEV` é falso e o menu não existe.
+ */
+function DevMenu({ current, onPick }: { current: Screen; onPick: (s: Screen) => void }) {
+  const q = new URLSearchParams(window.location.search);
+  const horario = q.has('fora') ? 'fora' : q.has('dentro') ? 'dentro' : undefined;
+  const pick = (id: Screen, h?: 'dentro' | 'fora') => {
+    // A tela final lê o horário da URL (o devStart só olha quando há `tela`): troca os dois
+    // antes de abrir. De bônus, recarregar a página volta para a mesma tela.
+    const url = new URL(window.location.href);
+    url.searchParams.set('tela', id);
+    url.searchParams.delete('dentro');
+    url.searchParams.delete('fora');
+    if (h) url.searchParams.set(h, '');
+    window.history.replaceState(null, '', url);
+    onPick(id);
+  };
+  return (
+    <nav className="fixed inset-x-0 top-0 z-50 flex gap-1 overflow-x-auto bg-slate-900/90 px-2 py-1.5 text-xs text-white backdrop-blur">
+      {DEV_SCREENS.map(({ id, label, horario: h }) => {
+        const on = id === current && (!h || h === horario);
+        return (
+          <button
+            key={label}
+            type="button"
+            onClick={() => pick(id, h)}
+            className={`shrink-0 rounded-full px-2.5 py-1 ${on ? 'bg-brand-gold text-brand-accent' : 'hover:bg-white/15'}`}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+/** Antes e depois do anúncio, no lugar do cartão "Protocolo indicado" da tela final. */
+function BeforeAfter() {
+  return (
+    <div className="mb-4 grid grid-cols-2 gap-1.5 rounded-3xl bg-brand-accent p-1.5 sm:mb-6">
+      {[
+        [antesImg, 'Antes'],
+        [depoisImg, 'Depois'],
+      ].map(([src, label]) => (
+        <figure key={label} className="relative overflow-hidden rounded-[1.25rem]">
+          <img src={src} alt={`Rosto ${label.toLowerCase()} da aplicação`} className="aspect-square w-full object-cover" />
+          <figcaption className="absolute bottom-2 left-2 rounded-full bg-brand-accent/85 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+            {label}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * A oferta do anúncio de toxina (Pague 1 Leve 4) no lugar do "Falta pouco!" do contato: a
+ * pessoa preenche para ter acesso, com 10 minutos no relógio (pedido do Matheus, 27/10).
+ */
+function RostoOffer() {
+  return (
+    <div className="mx-auto max-w-xl shrink-0 text-center">
+      <OfferCountdown />
+      <h2 className="mt-[clamp(0.75rem,2dvh,1.25rem)] font-serif text-[1.6rem] font-bold leading-tight tracking-tight text-brand-accent sm:text-3xl">
+        Pague 1, leve 4
+      </h2>
+      <p className="mt-2 text-sm leading-snug text-brand-muted sm:mt-3 sm:text-base">
+        Agende a testa e ganhe entre as sobrancelhas, nariz e ao redor dos olhos.{' '}
+        <strong className="font-semibold text-brand-accent">Em até 10x de R$95.</strong>
+      </p>
+    </div>
+  );
+}
+
+const OFFER_MS = 10 * 60 * 1000;
+const pad = (n: number) => String(n).padStart(2, '0');
+/** Quando a pessoa viu a oferta pela primeira vez: voltar e avançar não zera o relógio. */
+let offerDeadline: number | null = null;
+
+function OfferCountdown() {
+  const [now, setNow] = useState(() => Date.now());
+  offerDeadline ??= now + OFFER_MS;
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Chega a 00:00 e para; a oferta continua valendo, o formulário não trava.
+  const left = Math.max(0, Math.ceil((offerDeadline - now) / 1000));
+  const parts: [number, string][] = [
+    [Math.floor(left / 60), 'min'],
+    [left % 60, 'seg'],
+  ];
+
+  return (
+    <div className="flex items-start justify-center gap-4 sm:gap-5" aria-label="Tempo para garantir a promoção">
+      {parts.map(([n, label], i) => (
+        <div key={label} className="flex items-start gap-4 sm:gap-5">
+          {i > 0 && <span className="text-xl font-light leading-none text-slate-300">:</span>}
+          <div className="flex flex-col items-center">
+            <span className="text-xl font-semibold leading-none tabular-nums text-brand-accent sm:text-2xl">{pad(n)}</span>
+            <span className="mt-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-brand-muted">{label}</span>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
