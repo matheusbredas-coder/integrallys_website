@@ -104,7 +104,11 @@ export function OptionCircle<V extends string>({
         }`}
       >
         {option.image ? (
-          <img src={option.image} alt="" className="h-[74%] w-[74%] object-contain" />
+          <img
+            src={option.image}
+            alt=""
+            className={option.photo ? 'h-full w-full rounded-full object-cover' : 'h-[74%] w-[74%] object-contain'}
+          />
         ) : (
           Icon && <Icon strokeWidth={1.5} className="h-[48%] w-[48%] text-brand-accent" />
         )}

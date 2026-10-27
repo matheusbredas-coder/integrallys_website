@@ -23,13 +23,14 @@ export type OptionIcon = ComponentType<{ size?: number; strokeWidth?: number; cl
 
 /**
  * Uma opção de resposta. `image` (desenho de traço com fundo transparente) substitui o
- * ícone quando existir.
+ * ícone quando existir. Com `photo`, a imagem é uma foto e preenche o círculo inteiro.
  */
 export type Option<V extends string> = {
   value: V;
   label: string;
   icon?: OptionIcon;
   image?: string;
+  photo?: boolean;
 };
 
 export type Incomodo = 'gordura' | 'flacidez' | 'peso' | 'disposicao';
