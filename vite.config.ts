@@ -23,6 +23,8 @@ export default defineConfig(({mode}) => {
           ),
           // Quiz de qualificação, destino dos anúncios: sem menu nem rodapé.
           avaliacao: path.resolve(__dirname, 'avaliacao/index.html'),
+          // Quiz do rosto (anúncios de toxina): mesmo molde, sem a pergunta do orçamento.
+          avaliacaoRosto: path.resolve(__dirname, 'avaliacao-rosto/index.html'),
         },
       },
     },

@@ -82,6 +82,8 @@ export type QuizLeadPayload = {
   /** Cada resposta do quiz, já com o texto que a pessoa viu, rótulo → resposta. */
   respostas: Record<string, string>;
   website: string;
+  /** Qual dos quizzes: aparece no CRM como "Nome do formulário". */
+  formulario?: string;
 };
 
 /**
@@ -104,7 +106,7 @@ export async function submitQuizLead(payload: QuizLeadPayload): Promise<LeadResu
         protocolo: payload.protocolo,
         "Nome completo": payload.nome,
         WhatsApp: payload.whatsapp,
-        "Nome do formulário": "Site — quiz de avaliação",
+        "Nome do formulário": payload.formulario ?? "Site — quiz de avaliação",
         "Protocolo de interesse": payload.protocolo,
         Qualificação: payload.qualificacao,
         ...payload.respostas,

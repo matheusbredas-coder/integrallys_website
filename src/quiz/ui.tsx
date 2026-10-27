@@ -5,10 +5,10 @@ import type { Option } from './questions';
 export const STEP_LABELS = ['Objetivo', 'Região', 'Cidade', 'Investimento', 'Início', 'Contato'];
 
 /** Etapas numeradas no topo do cartão: a atual em dourado, as feitas em azul. */
-export function Stepper({ current }: { current: number }) {
+export function Stepper({ current, labels = STEP_LABELS }: { current: number; labels?: string[] }) {
   return (
     <ol className="flex items-start justify-between gap-1" aria-label="Etapas do quiz">
-      {STEP_LABELS.map((label, i) => {
+      {labels.map((label, i) => {
         const n = i + 1;
         const done = n < current;
         const active = n === current;
@@ -34,7 +34,7 @@ export function Stepper({ current }: { current: number }) {
                 {label}
               </span>
             </div>
-            {n < STEP_LABELS.length && (
+            {n < labels.length && (
               <span className={`mx-1.5 h-px flex-1 md:mb-6 ${done ? 'bg-brand-accent' : 'bg-slate-200'}`} />
             )}
           </li>
@@ -44,12 +44,12 @@ export function Stepper({ current }: { current: number }) {
   );
 }
 
-export function ProgressFooter({ current }: { current: number }) {
-  const pct = Math.round((current / STEP_LABELS.length) * 100);
+export function ProgressFooter({ current, total = STEP_LABELS.length }: { current: number; total?: number }) {
+  const pct = Math.round((current / total) * 100);
   return (
     <div className="flex shrink-0 items-center gap-4 border-t border-slate-100 px-5 py-3 sm:px-10 sm:py-5">
       <span className="whitespace-nowrap text-[10px] font-semibold uppercase tracking-widest text-brand-muted">
-        Etapa {current} de {STEP_LABELS.length}
+        Etapa {current} de {total}
       </span>
       <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
         <div className="h-full rounded-full bg-brand-accent transition-[width] duration-500" style={{ width: `${pct}%` }} />
