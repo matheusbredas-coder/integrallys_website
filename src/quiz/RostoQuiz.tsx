@@ -247,7 +247,7 @@ export function RostoQuiz() {
             eyebrow="Promoção garantida"
             intro={
               <>
-                Você pegou o <strong className="font-semibold text-brand-accent">Pague 1, leve 4</strong>. Este é o resultado
+                Você pegou o <strong className="font-semibold text-brand-accent">Pague 2, leve 4</strong>. Este é o resultado
                 que te espera:
               </>
             }
@@ -353,7 +353,7 @@ function BeforeAfter() {
 }
 
 /**
- * A oferta do anúncio de toxina (Pague 1 Leve 4) no lugar do "Falta pouco!" do contato: a
+ * A oferta do anúncio de toxina (Pague 2 Leve 4) no lugar do "Falta pouco!" do contato: a
  * pessoa preenche para ter acesso, com 10 minutos no relógio (pedido do Matheus, 27/10).
  */
 function RostoOffer() {
@@ -361,10 +361,10 @@ function RostoOffer() {
     <div className="mx-auto max-w-xl shrink-0 text-center">
       <OfferCountdown />
       <h2 className="mt-[clamp(0.75rem,2dvh,1.25rem)] font-serif text-[1.6rem] font-bold leading-tight tracking-tight text-brand-accent sm:text-3xl">
-        Pague 1, leve 4
+        Pague 2, leve 4
       </h2>
       <p className="mt-2 text-sm leading-snug text-brand-muted sm:mt-3 sm:text-base">
-        Agende a testa e ganhe entre as sobrancelhas, nariz e ao redor dos olhos.{' '}
+        Escolha 2 áreas e ganhe as outras 2: testa, entre as sobrancelhas, nariz e ao redor dos olhos.{' '}
         <strong className="font-semibold text-brand-accent">Em até 10x de R$95.</strong>
       </p>
     </div>
